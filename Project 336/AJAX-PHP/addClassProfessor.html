@@ -1,0 +1,95 @@
+<!--	
+ Author: Roberto Ronderos Botero 
+-->
+<h3>General Info</h3>
+<hr>
+<div class="row">
+	<div class="span4">
+		<div class="control-group">
+			<label class="control-label" for="cName"><b>Course Name</b></label>
+			<br>
+			<div class="controls">
+				<input id="cName" name="cName" class="input-medium input" type="text" placeholder="Course Name" required>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="cMajor"><b>Major</b> <a id="addMajorBtn"  role="button" class="btn btn-mini" ><i class="icon-plus"></i></a></label>
+			<br>
+			<div class="controls">
+				<select id="cMajor">
+					<option>Select Major</option>
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="population"><b>When will it be offered?</b></label>
+			<br/>
+			<div class="controls">
+				<input type="checkbox" name="semester[]" value="Spring">
+				Spring
+				<br>
+				<input type="checkbox" name="semester[]" value="Summer">
+				Summer
+				<br>
+				<input type="checkbox" name="semester[]" value="Spring">
+				Fall
+				<br>
+			</div>
+			<br/>
+		</div>
+	</div>
+	<div class="span4">
+		<div class="control-group">
+			<label class="control-label" for="cMaxStudents"><b>How many students are allowed?</b></label>
+			<br>
+			<div class="controls">
+				<input id="cMaxStudents" name="cMaxStudents" class="input-medium  input" type="text" placeholder="# of students allowed" required>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="cPreReqs"><b>Course Pre-requisits</b> <a id="addPreReqs" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i></a> </label>
+			<br>
+			<div class="controls">
+				<div id="cPreReqs">
+					<input id="cPreReqs[]" name="cPreReqs[]" type="text" class="input" placeholder='Course Name'>
+					<br>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<hr>
+<h3>Section info</h3>
+<hr>
+<div class="row">
+	<div class="span4">
+		<div class="control-group">
+			<label class="control-label" for="sectionNumber"><b>Section Number</b></label>
+			<br>
+			<div class="controls">
+				<div id="sectionNumbersDiv">
+					<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required>
+					<br>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="span4">
+		<div class="control-group">
+			<label class="control-label" for="sectionProfessor"><b>Professor Teaching</b></label>
+			<br>
+			<div class="controls">
+				<div id="sectionprofessorsDiv">
+					<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required>
+					<br>
+				</div>
+			</div>
+		</div>
+		<br>
+		<a id="addSection" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> Add Section</a>
+	</div>
+</div>
+<hr>
+<h3>Relevant Factors for permission number</h3>
+<hr>
+
