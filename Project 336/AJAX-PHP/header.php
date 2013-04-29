@@ -41,6 +41,7 @@ function echoActiveClassIfRequestMatches($requestUri)
     <meta name="author" content="Catalina Laverde">
     <meta name="author" content="David Zafrani">
     
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <!--Css Style for date picker-->
     <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">

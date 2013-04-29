@@ -2,13 +2,53 @@
  * @author Roberto Ronderos Botero
  */
 $(document).ready(function() {
-	/*Function inits*/
+	
+	/* drag-list */
+	  $( ".sortable" ).sortable({
+	      connectWith: '.sortable',
+	      placeholder: "ui-state-highlight"
+	    });
+	  
+	  $( ".sortable" ).on( "sortreceive", function( event, ui ) {		 
+		  var receivedItem = $(ui.item).attr('value');
+		  if(receivedItem=='universityYear'){
+			  {
+					var modalTitle = $("#criteriaModalLabel");
+					var modalBodyContent = $("#criteriaModal .modal-body");
+					var bodyContent = 
+						'<div class="control-group">'+
+							'<label class="control-label" for="population"><b>Please select which year is prefered for this class:</b></label>'+
+							'<br/>'+
+							'<div class="controls">'+
+								'<input type="radio" name="preferedYearModal" value="freshman">'+
+								'Freshman'+
+								'<br>'+
+								'<input type="radio" name="preferedYearModal" value="sophomore">'+
+								'Sophomore'+
+								'<br>'+
+								'<input type="radio" name="preferedYearModal" value="junior">'+
+								'Junior'+
+								'<br>'+
+								'<input type="radio" name="preferedYearModal" value="senior">'+
+								'Senior'+
+								'<br>'+
+							'</div>'+
+							'<br/>'+
+						'</div>';
+					
+					modalTitle.html('University Year Prefered');
+					modalBodyContent.html(bodyContent);					
+					$("#criteriaModal").modal("show");
+			  }
+		  }
+	  } );
+	/* Function inits */
 
 	loadMajors();
 
-	/*Select2 initializations*/
+	/* Select2 initializations */
 
-	/*Button handlers*/
+	/* Button handlers */
 
 	$("#dashboardBtn").click(function() {
 		if ($('#DashBoard').hasClass('inactiveWindow')) {
@@ -70,6 +110,8 @@ $(document).ready(function() {
 		$("#sectionNumbersDiv").append(rowSectionNumber);
 		$("#sectionprofessorsDiv").append(rowSectionProfessor);
 	});
+	
+	
 
 });
 

@@ -1,5 +1,5 @@
-<!--	
- Author: Roberto Ronderos Botero 
+<!--
+Author: Roberto Ronderos Botero
 -->
 <h3>General Info</h3>
 <hr>
@@ -92,4 +92,73 @@
 <hr>
 <h3>Relevant Factors for permission number</h3>
 <hr>
+<div class="row">
+	<style>
+		.sortable {
+			min-height: 100px;
+			border: 2px solid;
+			border-radius: 25px;
+			margin: 0 !important;
+		}
+		.unordered {
+			padding: 20px;
+		}
+		.ordered {
+			padding-top: 20px;
+			padding-left: 40px;
+			padding-right: 20px;
+			padding-bottom: 20px;
+		}
+		.noBullets {
+			list-style-type: none;
+		}
+		.sortable li {
+			min-height: 20px;
+		}
+		.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+			border: 1px solid #d3d3d3;
+			background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+			border-radius: 3px !important;
+			font-weight: normal;
+			color: #555555;
+			padding: 5px !important;
+		}
+	</style>
+	<div class="span4">
+		<h4>Basic Criteria</h4>
+		<p class="muted">
+			Please drag an item from this list to the "Used Criteria List". This lists contains commonly used criterias for a class
+			permission number.
+		</p>
+		<ul id="sortable1" style="" class="sortable unordered noBullets">
+			<li class="ui-state-default" value="requestedDate">
+				Requested Date
+			</li>
+			<li class="ui-state-default" value="universityYear">
+				Current University Year
+			</li>
+			<li class="ui-state-default" value="creditsCompleted">
+				Number of credits completed
+			</li>
+			<li class="ui-state-default" value="gradesPreReq">
+				Good Grades in Pre-reqs
+			</li>
+			<li class="ui-state-default" value="isCSmajor">
+				CS Major
+			</li>
+			<li class="ui-state-default" value="gpa">
+				G.P.A.
+			</li>
+		</ul>
+	</div>
+	<div class="span4">
+		<h4>Used Criteria</h4>
+		<p class="muted">
+			Please order the following items in descending order of importance (Leaving on top the most important criteria for your class).
+		</p>
+		<ol id="sortable2" class="sortable ordered" >
+
+		</ol>
+	</div>
+</div>
 
