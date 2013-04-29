@@ -1,73 +1,70 @@
 /**
  * @author Roberto Ronderos Botero
  */
-var receivedItem; //variable used to get received item object in the criteria lists
+var receivedItem;
+//variable used to get received item object in the criteria lists
 $(document).ready(function() {
-	
-	/* drag-list */
-	  $( ".sortable" ).sortable({
-	      connectWith: '.sortable',
-	      placeholder: "ui-state-highlight"
-	    });
-	  
-	  $( ".sortable.ordered" ).on( "sortreceive", function( event, ui ) {		 
-		  receivedItem = $(ui.item);
-		  var modalTitle = $("#criteriaModalLabel");
-		  var modalBodyContent = $("#criteriaModal .modal-body");
-		  var bodyContent;
-		  if(receivedItem.attr('value')=='universityYear'){
-			  
-					modalTitle = $("#criteriaModalLabel");
-					modalBodyContent = $("#criteriaModal .modal-body");
-					bodyContent = 
-						'<div class="control-group">'+
-							'<label class="control-label" for="year"><b>Please select which year is prefered for this class:</b></label>'+
-							'<br/>'+
-							'<div class="controls">'+
-								'<input type="radio" name="preferedYearModal" value="freshman">'+
-								'Freshman'+
-								'<br>'+
-								'<input type="radio" name="preferedYearModal" value="sophomore">'+
-								'Sophomore'+
-								'<br>'+
-								'<input type="radio" name="preferedYearModal" value="junior">'+
-								'Junior'+
-								'<br>'+
-								'<input type="radio" name="preferedYearModal" value="senior">'+
-								'Senior'+
-								'<br>'+
-							'</div>'+
-							'<br/>'+
-						'</div>';
+
+	/* drag-list criteria */
+	$(".sortable").sortable({
+		connectWith : '.sortable',
+		placeholder : "ui-state-highlight"
+	});
+
+	$(".sortable.ordered").on("sortreceive", function(event, ui) {
+		receivedItem = $(ui.item);
+		var modalTitle = $("#criteriaModalLabel");
+		var modalBodyContent = $("#criteriaModal .modal-body");
+		var bodyContent;
+		if (receivedItem.attr('value') == 'universityYear') {
+			bodyContent = '<div class="control-group">' + '<label class="control-label" for="year"><b>Please select which year is prefered for this class:</b></label>' + '<br/>' + '<div class="controls">' + '<input type="radio" name="preferedYearModal" value="freshman">' + 'Freshman' + '<br>' + '<input type="radio" name="preferedYearModal" value="sophomore">' + 'Sophomore' + '<br>' + '<input type="radio" name="preferedYearModal" value="junior">' + 'Junior' + '<br>' + '<input type="radio" name="preferedYearModal" value="senior">' + 'Senior' + '<br>' + '</div>' + '<br/>' + '</div>';
+
+			modalTitle.html('University Year Prefered');
+			modalBodyContent.html(bodyContent);
+			$("#criteriaModal").modal("show");
+
+		} else if (receivedItem.attr('value') == 'creditsCompleted') {
+			bodyContent = '<div class="control-group">' + '<label class="control-label" for="numberCreditsModal"><b>Specify the minimum preferred number of credits (inclusive):</b></label>' + '<br/>' + '<div class="controls">' + '<input type="text" id="numberCreditsModal" name="numberCreditsModal" placeholder="Number of credits" value="">' + '</div>' + '<br/>' + '</div>';
+
+			modalTitle.html('Prefered number of credits');
+			modalBodyContent.html(bodyContent);
+			$("#criteriaModal").modal("show");
+		} else if (receivedItem.attr('value') == 'gradesPreReq') {
+			bodyContent = '<div class="control-group">' + '<label class="control-label" for="preferedGradeModal"><b>Specify the minimum preferred grade for pre-reqs:</b></label>' + '<br/>' + '<div class="controls">' + '<input type="radio" name="preferedGradeModal" value="D">' + 'D' + '<br>' + '<input type="radio" name="preferedGradeModal" value="C">' + 'C' + '<br>' + '<input type="radio" name="preferedGradeModal" value="B">' + 'B' + '<br>' + '<input type="radio" name="preferedGradeModal" value="A">' + 'A' + '<br>' + '</div>' + '<br/>' + '</div>';
+
+			modalTitle.html('Prefered minimum grade');
+			modalBodyContent.html(bodyContent);
+			$("#criteriaModal").modal("show");
+		} else if (receivedItem.attr('value') == 'gpa') {
+			bodyContent = '<div class="control-group">' + '<label class="control-label" for="gpaModal"><b>Specify the minimum preferred G.P.A. (inclusive):</b></label>' + '<br/>' + '<div class="controls">' + '<input type="text" id="gpaModal" name="gpaModal" placeholder="Minimum GPA" value="">' + '</div>' + '<br/>' + '</div>';
+
+			modalTitle.html('Prefered minimum G.P.A.');
+			modalBodyContent.html(bodyContent);
+			$("#criteriaModal").modal("show");
+		}
+		else if (receivedItem.attr('value') == 'major') {
 					
-					modalTitle.html('University Year Prefered');
-					
-			  
-		  }
-		  else if(receivedItem.attr('value') == 'creditsCompleted'){
-			  modalTitle = $("#criteriaModalLabel");
-				modalBodyContent = $("#criteriaModal .modal-body");
-				bodyContent = 
-					'<div class="control-group">'+
-						'<label class="control-label" for="numberCreditsModal"><b>Specify the minimum preferred number of credits (inclusive):</b></label>'+
-						'<br/>'+
-						'<div class="controls">'+
-							'<input type="text" id="numberCreditsModal" name="numberCreditsModal" placeholder="Number of credits" value="">'+
-						'</div>'+
-						'<br/>'+
-					'</div>';
-				
-				modalTitle.html('Prefered number of credits');
-		  }
-		  modalBodyContent.html(bodyContent);					
-		  $("#criteriaModal").modal("show");
-	  } );
+			bodyContent = '<div class="control-group">'+
+								'<label class="control-label" for="cMajorModal"><b>Major:</b></label>'+
+								'<br>'+
+								'<div class="controls">'+
+									'<select id="cMajorModal">'+
+										'<option>Select Major</option>'+
+									'</select>'+
+								'</div>'+
+							'</div>';			
+			modalTitle.html('Prefered Major');
+			modalBodyContent.html(bodyContent);
+			loadMajors('#cMajorModal');	
+			$("#criteriaModal").modal("show");
+		}
+
+	});
 	/* Function inits */
 
-	loadMajors();
+	loadMajors('#cMajor');
 
-	/* Select2 initializations */
-
+	
 	/* Button handlers */
 
 	$("#dashboardBtn").click(function() {
@@ -123,30 +120,35 @@ $(document).ready(function() {
 		var name = $('#departmentName').val();
 		addDepartment(U_ID, name);
 	});
-	
-	$("#addSection").click(function(){
+
+	$("#addSection").click(function() {
 		var rowSectionNumber = '<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required><BR>';
 		var rowSectionProfessor = '<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required><BR>';
 		$("#sectionNumbersDiv").append(rowSectionNumber);
 		$("#sectionprofessorsDiv").append(rowSectionProfessor);
 	});
-	
+
 	$("#criteriaModalOKBtn").click(function() {
 		var valueReceivedItem = receivedItem.attr('value');
-		if(typeof(valueReceivedItem) != "undefined" && valueReceivedItem !== null && valueReceivedItem!="") {
-			if(valueReceivedItem=='universityYear'){				
-				$("#yearPreferred").attr('value',$('input[name="preferedYearModal"]:checked').val());				
-				
+		if ( typeof (valueReceivedItem) != "undefined" && valueReceivedItem !== null && valueReceivedItem != "") {
+			if (valueReceivedItem == 'universityYear') {
+				$("#yearPreferred").attr('value', $('input[name="preferedYearModal"]:checked').val());
+
+			} else if (valueReceivedItem == 'creditsCompleted') {
+				$("#preferedCredits").attr('value', $('#numberCreditsModal').val());
+			} else if (valueReceivedItem == 'gradesPreReq') {
+				$("#preferedGradePreReqs").attr('value', $('input[name="preferedGradeModal"]:checked').val());
+			}else if (valueReceivedItem == 'gpa') {
+				$("#preferedGPA").attr('value', $('#gpaModal').val());
 			}
-			else if(valueReceivedItem=='creditsCompleted'){
-				$("#preferedCredits").attr('value',$('#numberCreditsModal').val());	
+			else if (valueReceivedItem == 'major') {
+				$("#preferedMajor").attr('value', $('#cMajorModal').find(":selected").val());
 			}
+			
 			$("#criteriaModal").modal("hide");
 		}
-		
+
 	});
-	
-	
 
 });
 
@@ -182,16 +184,17 @@ function loadDepartments() {
 	});
 }
 
-function loadMajors() {
+function loadMajors(selector) {
 	$('#cMajor').empty();
 	$.ajax({
 		url : "AJAX-PHP/loadMajors.php",
 		async : false
 	}).done(function(data) {
-		console.log(data);
+		console.log(data+selector);
 		var obj = jQuery.parseJSON(data);
 		$.each(obj, function(key, val) {
-			$('#cMajor').append('<option value="' + key + '">' + val + '</option>');
+			$(selector).append('<option value="' + key + '">' + val + '</option>');
+			
 		});
 
 	});

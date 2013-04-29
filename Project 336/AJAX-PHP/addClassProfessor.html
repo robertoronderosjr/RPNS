@@ -95,8 +95,7 @@ Author: Roberto Ronderos Botero
 	<hr>
 	<div class="row">
 		<style>
-			.sortable {
-				min-height: 100px;
+			.sortable {				
 				border: 2px solid;
 				border-radius: 25px;
 				margin: 0 !important;
@@ -105,6 +104,7 @@ Author: Roberto Ronderos Botero
 				padding: 20px;
 			}
 			.ordered {
+				min-height: 100px;
 				padding-top: 20px;
 				padding-left: 40px;
 				padding-right: 20px;
@@ -144,8 +144,8 @@ Author: Roberto Ronderos Botero
 				<li class="ui-state-default" value="gradesPreReq">
 					Good Grades in Pre-reqs
 				</li>
-				<li class="ui-state-default" value="isCSmajor">
-					CS Major
+				<li class="ui-state-default" value="major">
+					Major
 				</li>
 				<li class="ui-state-default" value="gpa">
 					G.P.A.
@@ -172,5 +172,8 @@ Author: Roberto Ronderos Botero
 	</div>
 	<input type="hidden" id="yearPreferred" value=""/>
 	<input type="hidden" id="preferedCredits" value=""/>
+	<input type="hidden" id="preferedGradePreReqs" value=""/>
+	<input type="hidden" id="preferedGPA" value=""/>
+	<input type="hidden" id="preferedMajor" value=""/>
 </form>
 
