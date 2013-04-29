@@ -1,164 +1,176 @@
 <!--
 Author: Roberto Ronderos Botero
 -->
-<h3>General Info</h3>
-<hr>
-<div class="row">
-	<div class="span4">
-		<div class="control-group">
-			<label class="control-label" for="cName"><b>Course Name</b></label>
-			<br>
-			<div class="controls">
-				<input id="cName" name="cName" class="input-medium input" type="text" placeholder="Course Name" required>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="cMajor"><b>Major</b> <a id="addMajorBtn"  role="button" class="btn btn-mini" ><i class="icon-plus"></i></a></label>
-			<br>
-			<div class="controls">
-				<select id="cMajor">
-					<option>Select Major</option>
-				</select>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="population"><b>When will it be offered?</b></label>
-			<br/>
-			<div class="controls">
-				<input type="checkbox" name="semester[]" value="Spring">
-				Spring
+<form>
+	<h3>General Info</h3>
+	<hr>
+	<div class="row">
+		<div class="span4">
+			<div class="control-group">
+				<label class="control-label" for="cName"><b>Course Name</b></label>
 				<br>
-				<input type="checkbox" name="semester[]" value="Summer">
-				Summer
-				<br>
-				<input type="checkbox" name="semester[]" value="Spring">
-				Fall
-				<br>
+				<div class="controls">
+					<input id="cName" name="cName" class="input-medium input" type="text" placeholder="Course Name" required>
+				</div>
 			</div>
-			<br/>
-		</div>
-	</div>
-	<div class="span4">
-		<div class="control-group">
-			<label class="control-label" for="cMaxStudents"><b>How many students are allowed?</b></label>
-			<br>
-			<div class="controls">
-				<input id="cMaxStudents" name="cMaxStudents" class="input-medium  input" type="text" placeholder="# of students allowed" required>
+			<div class="control-group">
+				<label class="control-label" for="cMajor"><b>Major</b> <a id="addMajorBtn"  role="button" class="btn btn-mini" ><i class="icon-plus"></i></a></label>
+				<br>
+				<div class="controls">
+					<select id="cMajor">
+						<option>Select Major</option>
+					</select>
+				</div>
 			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label" for="cPreReqs"><b>Course Pre-requisits</b> <a id="addPreReqs" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i></a> </label>
-			<br>
-			<div class="controls">
-				<div id="cPreReqs">
-					<input id="cPreReqs[]" name="cPreReqs[]" type="text" class="input" placeholder='Course Name'>
+			<div class="control-group">
+				<label class="control-label" for="population"><b>When will it be offered?</b></label>
+				<br/>
+				<div class="controls">
+					<input type="checkbox" name="semester[]" value="Spring">
+					Spring
 					<br>
+					<input type="checkbox" name="semester[]" value="Summer">
+					Summer
+					<br>
+					<input type="checkbox" name="semester[]" value="Spring">
+					Fall
+					<br>
+				</div>
+				<br/>
+			</div>
+		</div>
+		<div class="span4">
+			<div class="control-group">
+				<label class="control-label" for="cMaxStudents"><b>How many students are allowed?</b></label>
+				<br>
+				<div class="controls">
+					<input id="cMaxStudents" name="cMaxStudents" class="input-medium  input" type="text" placeholder="# of students allowed" required>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="cPreReqs"><b>Course Pre-requisits</b> <a id="addPreReqs" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i></a> </label>
+				<br>
+				<div class="controls">
+					<div id="cPreReqs">
+						<input id="cPreReqs[]" name="cPreReqs[]" type="text" class="input" placeholder='Course Name'>
+						<br>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<hr>
-<h3>Section info</h3>
-<hr>
-<div class="row">
-	<div class="span4">
-		<div class="control-group">
-			<label class="control-label" for="sectionNumber"><b>Section Number</b></label>
-			<br>
-			<div class="controls">
-				<div id="sectionNumbersDiv">
-					<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required>
-					<br>
+	<hr>
+	<h3>Section info</h3>
+	<hr>
+	<div class="row">
+		<div class="span4">
+			<div class="control-group">
+				<label class="control-label" for="sectionNumber"><b>Section Number</b></label>
+				<br>
+				<div class="controls">
+					<div id="sectionNumbersDiv">
+						<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required>
+						<br>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="span4">
-		<div class="control-group">
-			<label class="control-label" for="sectionProfessor"><b>Professor Teaching</b></label>
-			<br>
-			<div class="controls">
-				<div id="sectionprofessorsDiv">
-					<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required>
-					<br>
+		<div class="span4">
+			<div class="control-group">
+				<label class="control-label" for="sectionProfessor"><b>Professor Teaching</b></label>
+				<br>
+				<div class="controls">
+					<div id="sectionprofessorsDiv">
+						<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required>
+						<br>
+					</div>
 				</div>
 			</div>
+			<br>
+			<a id="addSection" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> Add Section</a>
 		</div>
-		<br>
-		<a id="addSection" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> Add Section</a>
 	</div>
-</div>
-<hr>
-<h3>Relevant Factors for permission number</h3>
-<hr>
-<div class="row">
-	<style>
-		.sortable {
-			min-height: 100px;
-			border: 2px solid;
-			border-radius: 25px;
-			margin: 0 !important;
-		}
-		.unordered {
-			padding: 20px;
-		}
-		.ordered {
-			padding-top: 20px;
-			padding-left: 40px;
-			padding-right: 20px;
-			padding-bottom: 20px;
-		}
-		.noBullets {
-			list-style-type: none;
-		}
-		.sortable li {
-			min-height: 20px;
-		}
-		.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
-			border: 1px solid #d3d3d3;
-			background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
-			border-radius: 3px !important;
-			font-weight: normal;
-			color: #555555;
-			padding: 5px !important;
-		}
-	</style>
-	<div class="span4">
-		<h4>Basic Criteria</h4>
-		<p class="muted">
-			Please drag an item from this list to the "Used Criteria List". This lists contains commonly used criterias for a class
-			permission number.
-		</p>
-		<ul id="sortable1" style="" class="sortable unordered noBullets">
-			<li class="ui-state-default" value="requestedDate">
-				Requested Date
-			</li>
-			<li class="ui-state-default" value="universityYear">
-				Current University Year
-			</li>
-			<li class="ui-state-default" value="creditsCompleted">
-				Number of credits completed
-			</li>
-			<li class="ui-state-default" value="gradesPreReq">
-				Good Grades in Pre-reqs
-			</li>
-			<li class="ui-state-default" value="isCSmajor">
-				CS Major
-			</li>
-			<li class="ui-state-default" value="gpa">
-				G.P.A.
-			</li>
-		</ul>
-	</div>
-	<div class="span4">
-		<h4>Used Criteria</h4>
-		<p class="muted">
-			Please order the following items in descending order of importance (Leaving on top the most important criteria for your class).
-		</p>
-		<ol id="sortable2" class="sortable ordered" >
+	<hr>
+	<h3>Relevant Factors for permission number</h3>
+	<hr>
+	<div class="row">
+		<style>
+			.sortable {
+				min-height: 100px;
+				border: 2px solid;
+				border-radius: 25px;
+				margin: 0 !important;
+			}
+			.unordered {
+				padding: 20px;
+			}
+			.ordered {
+				padding-top: 20px;
+				padding-left: 40px;
+				padding-right: 20px;
+				padding-bottom: 20px;
+			}
+			.noBullets {
+				list-style-type: none;
+			}
+			.sortable li {
+				min-height: 20px;
+			}
+			.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+				border: 1px solid #d3d3d3;
+				background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
+				border-radius: 3px !important;
+				font-weight: normal;
+				color: #555555;
+				padding: 5px !important;
+			}
+		</style>
+		<div class="span4">
+			<h4>Basic Criteria</h4>
+			<p class="muted">
+				Please drag an item from this list to the "Used Criteria List". This lists contains commonly used criterias for a class
+				permission number.
+			</p>
+			<ul id="sortable1" style="" class="sortable unordered noBullets">
+				<li class="ui-state-default" value="requestedDate">
+					Requested Date
+				</li>
+				<li class="ui-state-default" value="universityYear">
+					Current University Year
+				</li>
+				<li class="ui-state-default" value="creditsCompleted">
+					Number of credits completed
+				</li>
+				<li class="ui-state-default" value="gradesPreReq">
+					Good Grades in Pre-reqs
+				</li>
+				<li class="ui-state-default" value="isCSmajor">
+					CS Major
+				</li>
+				<li class="ui-state-default" value="gpa">
+					G.P.A.
+				</li>
+			</ul>
+		</div>
+		<div class="span4">
+			<h4>Used Criteria</h4>
+			<p class="muted">
+				Please order the following items in descending order of importance (Leaving on top the most important criteria for your class).
+			</p>
+			<ol id="sortable2" class="sortable ordered" >
 
-		</ol>
+			</ol>
+		</div>
 	</div>
-</div>
+	<div class="form-actions">
+		<button id="submitBtn" type="submit" class="btn btn-primary">
+			Add Class »
+		</button>
+		<button id="clear" type="reset" class="btn">
+			Clear Form
+		</button>		
+	</div>
+	<input type="hidden" id="yearPreferred" value=""/>
+	<input type="hidden" id="preferedCredits" value=""/>
+</form>
 

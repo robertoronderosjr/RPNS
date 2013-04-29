@@ -1,6 +1,7 @@
 /**
  * @author Roberto Ronderos Botero
  */
+var receivedItem; //variable used to get received item object in the criteria lists
 $(document).ready(function() {
 	
 	/* drag-list */
@@ -9,15 +10,18 @@ $(document).ready(function() {
 	      placeholder: "ui-state-highlight"
 	    });
 	  
-	  $( ".sortable" ).on( "sortreceive", function( event, ui ) {		 
-		  var receivedItem = $(ui.item).attr('value');
-		  if(receivedItem=='universityYear'){
-			  {
-					var modalTitle = $("#criteriaModalLabel");
-					var modalBodyContent = $("#criteriaModal .modal-body");
-					var bodyContent = 
+	  $( ".sortable.ordered" ).on( "sortreceive", function( event, ui ) {		 
+		  receivedItem = $(ui.item);
+		  var modalTitle = $("#criteriaModalLabel");
+		  var modalBodyContent = $("#criteriaModal .modal-body");
+		  var bodyContent;
+		  if(receivedItem.attr('value')=='universityYear'){
+			  
+					modalTitle = $("#criteriaModalLabel");
+					modalBodyContent = $("#criteriaModal .modal-body");
+					bodyContent = 
 						'<div class="control-group">'+
-							'<label class="control-label" for="population"><b>Please select which year is prefered for this class:</b></label>'+
+							'<label class="control-label" for="year"><b>Please select which year is prefered for this class:</b></label>'+
 							'<br/>'+
 							'<div class="controls">'+
 								'<input type="radio" name="preferedYearModal" value="freshman">'+
@@ -37,10 +41,26 @@ $(document).ready(function() {
 						'</div>';
 					
 					modalTitle.html('University Year Prefered');
-					modalBodyContent.html(bodyContent);					
-					$("#criteriaModal").modal("show");
-			  }
+					
+			  
 		  }
+		  else if(receivedItem.attr('value') == 'creditsCompleted'){
+			  modalTitle = $("#criteriaModalLabel");
+				modalBodyContent = $("#criteriaModal .modal-body");
+				bodyContent = 
+					'<div class="control-group">'+
+						'<label class="control-label" for="numberCreditsModal"><b>Specify the minimum preferred number of credits (inclusive):</b></label>'+
+						'<br/>'+
+						'<div class="controls">'+
+							'<input type="text" id="numberCreditsModal" name="numberCreditsModal" placeholder="Number of credits" value="">'+
+						'</div>'+
+						'<br/>'+
+					'</div>';
+				
+				modalTitle.html('Prefered number of credits');
+		  }
+		  modalBodyContent.html(bodyContent);					
+		  $("#criteriaModal").modal("show");
 	  } );
 	/* Function inits */
 
@@ -109,6 +129,21 @@ $(document).ready(function() {
 		var rowSectionProfessor = '<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required><BR>';
 		$("#sectionNumbersDiv").append(rowSectionNumber);
 		$("#sectionprofessorsDiv").append(rowSectionProfessor);
+	});
+	
+	$("#criteriaModalOKBtn").click(function() {
+		var valueReceivedItem = receivedItem.attr('value');
+		if(typeof(valueReceivedItem) != "undefined" && valueReceivedItem !== null && valueReceivedItem!="") {
+			if(valueReceivedItem=='universityYear'){				
+				$("#yearPreferred").attr('value',$('input[name="preferedYearModal"]:checked').val());				
+				
+			}
+			else if(valueReceivedItem=='creditsCompleted'){
+				$("#preferedCredits").attr('value',$('#numberCreditsModal').val());	
+			}
+			$("#criteriaModal").modal("hide");
+		}
+		
 	});
 	
 	
