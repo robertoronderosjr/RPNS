@@ -1,3 +1,6 @@
+/**
+ *@author Catalina Laverde Duarte 
+ */
 $(document).ready(function() {
 	
 	 $.validator.addMethod("textOnly", 
