@@ -124,6 +124,14 @@ Author: Roberto Ronderos Botero
 				color: #555555;
 				padding: 5px !important;
 			}
+			.ui-state-disabled:hover{
+				border: dashed;
+				border-width: 2px;
+				border-color: black;			
+			}
+			#addCustom{
+				color: black !important;
+			}
 		</style>
 		<div class="span4">
 			<h4>Basic Criteria</h4>
@@ -149,6 +157,9 @@ Author: Roberto Ronderos Botero
 				</li>
 				<li class="ui-state-default" value="gpa">
 					G.P.A.
+				</li>
+				<li class="ui-state-default ui-state-disabled" >
+					<a id="customCriteriaModalBtn" href="#customCriteriaModal" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> ADD CUSTOM</a>					
 				</li>
 			</ul>
 		</div>

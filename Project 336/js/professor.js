@@ -1,14 +1,17 @@
 /**
  * @author Roberto Ronderos Botero
+ * @contributor Catalina Laverde Duarte
  */
 var receivedItem;
+var counter;
 //variable used to get received item object in the criteria lists
 $(document).ready(function() {
 
 	/* drag-list criteria */
 	$(".sortable").sortable({
 		connectWith : '.sortable',
-		placeholder : "ui-state-highlight"
+		placeholder : "ui-state-highlight",
+		items : "li:not(.ui-state-disabled)"
 	});
 
 	$(".sortable.ordered").on("sortreceive", function(event, ui) {
@@ -41,21 +44,12 @@ $(document).ready(function() {
 			modalTitle.html('Prefered minimum G.P.A.');
 			modalBodyContent.html(bodyContent);
 			$("#criteriaModal").modal("show");
-		}
-		else if (receivedItem.attr('value') == 'major') {
-					
-			bodyContent = '<div class="control-group">'+
-								'<label class="control-label" for="cMajorModal"><b>Major:</b></label>'+
-								'<br>'+
-								'<div class="controls">'+
-									'<select id="cMajorModal">'+
-										'<option>Select Major</option>'+
-									'</select>'+
-								'</div>'+
-							'</div>';			
+		} else if (receivedItem.attr('value') == 'major') {
+
+			bodyContent = '<div class="control-group">' + '<label class="control-label" for="cMajorModal"><b>Major:</b></label>' + '<br>' + '<div class="controls">' + '<select id="cMajorModal">' + '<option>Select Major</option>' + '</select>' + '</div>' + '</div>';
 			modalTitle.html('Prefered Major');
 			modalBodyContent.html(bodyContent);
-			loadMajors('#cMajorModal');	
+			loadMajors('#cMajorModal');
 			$("#criteriaModal").modal("show");
 		}
 
@@ -64,7 +58,6 @@ $(document).ready(function() {
 
 	loadMajors('#cMajor');
 
-	
 	/* Button handlers */
 
 	$("#dashboardBtn").click(function() {
@@ -138,17 +131,160 @@ $(document).ready(function() {
 				$("#preferedCredits").attr('value', $('#numberCreditsModal').val());
 			} else if (valueReceivedItem == 'gradesPreReq') {
 				$("#preferedGradePreReqs").attr('value', $('input[name="preferedGradeModal"]:checked').val());
-			}else if (valueReceivedItem == 'gpa') {
+			} else if (valueReceivedItem == 'gpa') {
 				$("#preferedGPA").attr('value', $('#gpaModal').val());
-			}
-			else if (valueReceivedItem == 'major') {
+			} else if (valueReceivedItem == 'major') {
 				$("#preferedMajor").attr('value', $('#cMajorModal').find(":selected").val());
 			}
-			
+
 			$("#criteriaModal").modal("hide");
 		}
 
 	});
+	
+	$("#customCriteriaModalOKBtn").click(function() {
+		
+		/*reseting to default state*/
+		$('#typeOfQuestion option[value=0]').attr('selected', 'selected');
+		$("#customHtmlModal").empty();
+	});
+	
+	
+	$("#typeOfQuestion").change(function() {
+		$("#customHtmlModal").empty();
+		counter=1;
+		var selected = $("#typeOfQuestion option:selected").val();
+		var innerhtml;
+		switch(selected){
+			case '1':
+				innerhtml = '<div class="control-group"> '+
+                            	'<label class="control-label" for="customQuestion"><b>Question</b></label><br> '+
+                            	'<div class="controls"> '+
+                            		'<input id="customQuestion" name="customQuestion" class="input-xlarge input" type="text" placeholder="Type your question to the student" required> '+
+                            	'</div> '+
+                          	'</div> '+
+                          	'<div class="control-group"> '+
+                            	'<label class="control-label" for="keywordsCustomQuestion"><b>Keywords to look for</b></label><br> '+
+                            	'<div id="keywordsCustomQuestion"> '+
+                            		'<div class="keywordGroup">'+
+	                            		'<input id="ck'+counter+'" name="customKeyword[]" class="input-xlarge input" type="text" placeholder="Type Keyword" required> '+							
+											  '<select id="importanceKeyword" for="ck'+counter+'" >'+
+													'<option value="0">Select a importance</option>'+
+													'<option value="1">1</option>'+
+													'<option value="2">2</option>'+
+													'<option value="3">3</option>'+
+													'<option value="3">4</option>'+
+													'<option value="3">5</option>'+
+												'</select>'+
+									'</div>'+
+                            	'</div>'+            
+                          	'</div>'+
+                          	'<a id="addKeywordField" role="button" class="btn btn-mini" ><i class="icon-plus"></i> Add Keyword field</a>';
+                  $("#customHtmlModal").append(innerhtml);
+                  $("#addKeywordField").click(function() { 
+                  		counter++;                     
+						var htmlToAppend =         		'<div class="keywordGroup">'+
+								                            		'<input id="ck'+counter+'" name="customKeyword[]" class="input-xlarge input" type="text" placeholder="Type Keyword" required> '+							
+																		  '<select id="importanceKeyword" for="ck'+counter+'" >'+
+																				'<option value="">Select a importance</option>'+
+																				'<option value="1">1</option>'+
+																				'<option value="2">2</option>'+
+																				'<option value="3">3</option>'+
+																				'<option value="3">4</option>'+
+																				'<option value="3">5</option>'+
+																			'</select>'+
+																'</div>';
+						$("#keywordsCustomQuestion").append(htmlToAppend);
+							                            	
+						
+					});
+				break;
+			case '2':
+				innerhtml = '<div class="control-group"> '+
+                            	'<label class="control-label" for="customQuestion"><b>Question</b></label><br> '+
+                            	'<div class="controls"> '+
+                            		'<input id="customQuestion" name="customQuestion" class="input-xlarge input" type="text" placeholder="Type your question to the student" required> '+
+                            	'</div> '+
+                          	'</div> '+
+                          	'<div class="control-group"> '+
+                            	'<label class="control-label" for="checkboxCustomQuestion"><b>Checkboxes to display</b></label><br> '+
+                            	'<div id="checkboxCustomQuestion"> '+
+                            		'<div class="checkboxGroup">'+
+	                            		'<input id="cb'+counter+'" name="customCheckboxes[]" class="input-xlarge input" type="text" placeholder="Type checkbox text" required> '+
+	                            		'<select id="importanceCheckbox" for="cb'+counter+'" >'+
+																				'<option value="">Select a importance</option>'+
+																				'<option value="1">1</option>'+
+																				'<option value="2">2</option>'+
+																				'<option value="3">3</option>'+
+																				'<option value="3">4</option>'+
+																				'<option value="3">5</option>'+
+																			'</select>'+							
+									'</div>'+
+                            	'</div>'+            
+                          	'</div>'+
+                          	'<a id="addKeywordField" role="button" class="btn btn-mini" ><i class="icon-plus"></i> Add checkbox field</a>';
+                  $("#customHtmlModal").append(innerhtml);
+                  $("#addKeywordField").click( function() {
+						counter++;                     
+						var htmlToAppend = '<div class="checkboxGroup">'+
+								                            		'<input id="cb'+counter+'" name="customKeyword[]" class="input-xlarge input" type="text" placeholder="Type checkbox text" required> '+							
+																		  '<select id="importanceCheckbox" for="cb'+counter+'" >'+
+																				'<option value="">Select a importance</option>'+
+																				'<option value="1">1</option>'+
+																				'<option value="2">2</option>'+
+																				'<option value="3">3</option>'+
+																				'<option value="3">4</option>'+
+																				'<option value="3">5</option>'+
+																			'</select>'+
+																'</div>';
+						$("#checkboxCustomQuestion").append(htmlToAppend);
+					});
+				break;
+			default:
+				innerhtml = '<div class="control-group"> '+
+                            	'<label class="control-label" for="customQuestion"><b>Question</b></label><br> '+
+                            	'<div class="controls"> '+
+                            		'<input id="customQuestion" name="customQuestion" class="input-xlarge input" type="text" placeholder="Type your question to the student" required> '+
+                            	'</div> '+
+                          	'</div> '+
+                          	'<div class="control-group"> '+
+                            	'<label class="control-label" for="checkboxCustomQuestion"><b>Radio Button text to display</b></label><br> '+
+                            	'<div id="radioCustomQuestion"> '+
+                            		'<div class="radioGroup">'+
+	                            		'<input id="rb'+counter+'" name="customRadios[]" class="input-xlarge input" type="text" placeholder="Type radio button text" required> '+
+	                            		'<select id="importanceRadio" for="rb'+counter+'" >'+
+																				'<option value="">Select a importance</option>'+
+																				'<option value="1">1</option>'+
+																				'<option value="2">2</option>'+
+																				'<option value="3">3</option>'+
+																				'<option value="3">4</option>'+
+																				'<option value="3">5</option>'+
+																			'</select>'+							
+									'</div>'+
+                            	'</div>'+            
+                          	'</div>'+
+                          	'<a id="addRadioField" role="button" class="btn btn-mini" ><i class="icon-plus"></i> Add Radio field</a>';
+                  $("#customHtmlModal").append(innerhtml);
+                  $("#addRadioField").click( function() {
+						counter++;                     
+						var htmlToAppend = '<div class="radioGroup">'+
+								                            		'<input id="rb'+counter+'" name="customRadios[]" class="input-xlarge input" type="text" placeholder="Type radio button text" required> '+							
+																		  '<select id="importanceCheckbox" for="rb'+counter+'" >'+
+																				'<option value="">Select a importance</option>'+
+																				'<option value="1">1</option>'+
+																				'<option value="2">2</option>'+
+																				'<option value="3">3</option>'+
+																				'<option value="3">4</option>'+
+																				'<option value="3">5</option>'+
+																			'</select>'+
+																'</div>';
+						$("#radioCustomQuestion").append(htmlToAppend);
+					});
+				break;
+		}
+	});
+	
+	
 
 });
 
@@ -190,11 +326,11 @@ function loadMajors(selector) {
 		url : "AJAX-PHP/loadMajors.php",
 		async : false
 	}).done(function(data) {
-		console.log(data+selector);
+		
 		var obj = jQuery.parseJSON(data);
 		$.each(obj, function(key, val) {
 			$(selector).append('<option value="' + key + '">' + val + '</option>');
-			
+
 		});
 
 	});
