@@ -52,7 +52,8 @@ Author: Roberto Ronderos Botero
 				<br>
 				<div class="controls">
 					<div id="cPreReqs">
-						<input id="cPreReqs[]" name="cPreReqs[]" type="text" class="input" placeholder='Course Name'>
+						<input type="text" class="input prereqsfields" placeholder='Course Name' />
+						<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value=""/>
 						<br>
 					</div>
 				</div>
@@ -74,21 +75,9 @@ Author: Roberto Ronderos Botero
 					</div>
 				</div>
 			</div>
-		</div>
-		<div class="span4">
-			<div class="control-group">
-				<label class="control-label" for="sectionProfessor"><b>Professor Teaching</b></label>
-				<br>
-				<div class="controls">
-					<div id="sectionprofessorsDiv">
-						<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required>
-						<br>
-					</div>
-				</div>
-			</div>
 			<br>
 			<a id="addSection" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> Add Section</a>
-		</div>
+		</div>		
 	</div>
 	<hr>
 	<h3>Relevant Factors for permission number</h3>

@@ -6,9 +6,31 @@ var receivedItem;//variable used to get received item object in the criteria lis
 var counter;
 var customQuestionCounter=0;
 var selectedCustomCriteria="0";
-
+var selectedPreReq;
 $(document).ready(function() {
 
+	/*course pre-reqs auto-complete*/
+	$(".prereqsfields").autocomplete({
+      source: "AJAX-PHP/loadCourses.php",
+      minLength: 2,
+      open: function (event,ui) {
+        selectedPreReq=false;
+        
+      },
+      select: function( event, ui ) {  
+      	$(this).next().next().attr('value',ui.item.id);
+      	selectedPreReq=true;
+      	
+      },
+      change: function(event,ui){
+      	if(!selectedPreReq){
+	      	var val = $(this).val();
+	      	$(this).next().next().attr('value',val);
+	    }
+      }
+    });
+    
+	
 	/* drag-list criteria */
 	$(".sortable").sortable({
 		connectWith : '.sortable',
@@ -61,7 +83,7 @@ $(document).ready(function() {
 			$("#criteriaModal").modal("show");
 		} else if (receivedItem.attr('value') == 'major') {
 
-			bodyContent = '<div class="control-group">' + '<label class="control-label" for="cMajorModal"><b>Major:</b></label>' + '<br>' + '<div class="controls">' + '<select id="cMajorModal">' + '<option>Select Major</option>' + '</select>' + '</div>' + '</div>';
+			bodyContent = '<div class="control-group">' + '<label class="control-label" for="cMajorModal"><b>Major:</b></label>' + '<br>' + '<div class="controls">' + '<select id="cMajorModal"></select>' + '</div>' + '</div>';
 			modalTitle.html('Prefered Major');
 			modalBodyContent.html(bodyContent);
 			loadMajors('#cMajorModal');
@@ -103,8 +125,28 @@ $(document).ready(function() {
 	});
 
 	$("#addPreReqs").click(function() {
-		var row = "<input id='cPreReqs[]' name='cPreReqs[]' type='text' placeholder='Course Name'><BR>";
+		var row = '<input type="text" class="input prereqsfields" placeholder="Course Name"/>\
+						<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value=""/><BR>';
 		$("#cPreReqs").append(row);
+		$(".prereqsfields").autocomplete({
+	      source: "AJAX-PHP/loadCourses.php",
+	      minLength: 2,
+	      open: function (event,ui) {
+		        selectedPreReq=false;
+		        
+		      },
+		      select: function( event, ui ) {  
+		      	$(this).next().next().attr('value',ui.item.id);
+		      	selectedPreReq=true;
+		      	
+		      },
+		      change: function(event,ui){
+		      	if(!selectedPreReq){
+			      	var val = $(this).val();
+			      	$(this).next().next().attr('value',val);
+			    }
+		      }
+	    });
 	});
 
 	$("#addMajorBtn").click(function() {
@@ -131,9 +173,8 @@ $(document).ready(function() {
 
 	$("#addSection").click(function() {
 		var rowSectionNumber = '<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required><BR>';
-		var rowSectionProfessor = '<input id="sectionProfessor" name="sectionProfessor[]" class="input-medium  input" type="text" placeholder="Professor" required><BR>';
+		
 		$("#sectionNumbersDiv").append(rowSectionNumber);
-		$("#sectionprofessorsDiv").append(rowSectionProfessor);
 	});
 
 	$("#criteriaModalOKBtn").click(function() {
@@ -396,8 +437,8 @@ function loadDepartments() {
 }
 
 function loadMajors(selector) {
-	$('#cMajor').empty();
-	$('#cMajor').append('<option >Select A Major</option>');
+	$(selector).empty();
+	$(selector).append('<option >Select A Major</option>');
 	$.ajax({
 		url : "AJAX-PHP/loadMajors.php",
 		async : false

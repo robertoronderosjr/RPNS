@@ -13,7 +13,6 @@
     <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript" src="js/select2-release-3.2/select2.js"></script>
     <script type="text/javascript" src="js/registration.js"></script>
     <?php if($_SESSION['type']==2){ ?>
     <script type="text/javascript" src="js/professor.js"></script>
