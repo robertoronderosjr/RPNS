@@ -1,7 +1,7 @@
 <!--
 Author: Roberto Ronderos Botero
 -->
-<form>
+<form action="AJAX-PHP/addClass.php" method="post">
 	<h3>General Info</h3>
 	<hr>
 	<div class="row">
@@ -17,7 +17,7 @@ Author: Roberto Ronderos Botero
 				<label class="control-label" for="cMajor"><b>Major</b> <a id="addMajorBtn"  role="button" class="btn btn-mini" ><i class="icon-plus"></i></a></label>
 				<br>
 				<div class="controls">
-					<select id="cMajor">
+					<select id="cMajor" name="cMajor">
 						<option>Select Major</option>
 					</select>
 				</div>
@@ -32,7 +32,7 @@ Author: Roberto Ronderos Botero
 					<input type="checkbox" name="semester[]" value="Summer">
 					Summer
 					<br>
-					<input type="checkbox" name="semester[]" value="Spring">
+					<input type="checkbox" name="semester[]" value="Fall">
 					Fall
 					<br>
 				</div>
@@ -132,31 +132,40 @@ Author: Roberto Ronderos Botero
 			#addCustom{
 				color: black !important;
 			}
+			#customCriteria{
+				display:none;
+			}
 		</style>
 		<div class="span4">
 			<h4>Basic Criteria</h4>
 			<p class="muted">
-				Please drag an item from this list to the "Used Criteria List". This lists contains commonly used criterias for a class
-				permission number.
+				Please drag an item from this list to the "Used Criteria List". This list contains commonly used criteria for a class
+				permission number. Likewise drag it back to stop using it.
 			</p>
 			<ul id="sortable1" style="" class="sortable unordered noBullets">
 				<li class="ui-state-default" value="requestedDate">
 					Requested Date
+					<input type="hidden" name="basicCriteria[]" value="requestedDate" disabled="disabled"/>
 				</li>
 				<li class="ui-state-default" value="universityYear">
 					Current University Year
+					<input type="hidden" name="basicCriteria[]" value="universityYear" disabled="disabled"/>
 				</li>
 				<li class="ui-state-default" value="creditsCompleted">
 					Number of credits completed
+					<input type="hidden" name="basicCriteria[]" value="creditsCompleted" disabled="disabled"/>
 				</li>
 				<li class="ui-state-default" value="gradesPreReq">
 					Good Grades in Pre-reqs
+					<input type="hidden" name="basicCriteria[]" value="gradesPreReq" disabled="disabled"/>
 				</li>
 				<li class="ui-state-default" value="major">
 					Major
+					<input type="hidden" name="basicCriteria[]" value="major" disabled="disabled"/>
 				</li>
 				<li class="ui-state-default" value="gpa">
 					G.P.A.
+					<input type="hidden" name="basicCriteria[]" value="gpa" disabled="disabled"/>
 				</li>
 				<li class="ui-state-default ui-state-disabled" >
 					<a id="customCriteriaModalBtn" href="#customCriteriaModal" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> ADD CUSTOM</a>					
@@ -181,10 +190,13 @@ Author: Roberto Ronderos Botero
 			Clear Form
 		</button>		
 	</div>
-	<input type="hidden" id="yearPreferred" value=""/>
-	<input type="hidden" id="preferedCredits" value=""/>
-	<input type="hidden" id="preferedGradePreReqs" value=""/>
-	<input type="hidden" id="preferedGPA" value=""/>
-	<input type="hidden" id="preferedMajor" value=""/>
+	<input type="hidden" id="yearPreferred" name="yearPreferred" value=""/>
+	<input type="hidden" id="preferedCredits" name="preferedCredits" value=""/>
+	<input type="hidden" id="preferedGradePreReqs" name="preferedGradePreReqs" value=""/>
+	<input type="hidden" id="preferedGPA" name="preferedGPA" value=""/>
+	<input type="hidden" id="preferedMajor" name="preferedMajor" value=""/>
+	<div id="customCriteria">
+		<input id='numberOfCustomQuestions' name='numberOfCustomQuestions' value=''/>
+	</div>
 </form>
 
