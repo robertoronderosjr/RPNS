@@ -77,9 +77,9 @@
               	<?php if($_SESSION['type']==2){ ?>              		
 	                <li class="nav-header">Actions</li>
 	                <li class="divider"></li>
-	                <li id="dashboardBtn" class="active"><a href="#Dashboard">Dashboard</a></li>
-	                <li id="addClassdBtn"><a href="#addClass">Add Class</a></li>
-	                <li id="seeClassesBtn"><a href="#seeClasses">See Classes</a></li>
+	                <li id="dashboardBtn" class="active"><a href="#">Dashboard</a></li>
+	                <li id="addClassdBtn"><a href="#">Add Class</a></li>
+	                <li id="seeClassesBtn"><a href="#">See Classes</a></li>
 	                <li ><a href="profile.php">Profile</a></li>
 	                <li ><a href="settings.php">Settings</a></li>                
 	                <li class="nav-header">Other</li>
@@ -90,9 +90,9 @@
 	  				else{ ?>
 	  				<li class="nav-header">Actions</li>
 	  				<li class="divider"></li>
-	                <li id="dashboardBtn" class="active"><a href="#Dashboard">Dashboard</a></li>
-	                <li id="addClassdBtn"><a href="#addClass">Request Permission #</a></li>
-	                <li id="seeClassesBtn"><a href="#seeClasses">See Requested</a></li>
+	                <li id="dashboardBtn" class="active"><a href="#">Dashboard</a></li>
+	                <li id="addClassdBtn"><a href="#">Request Permission #</a></li>
+	                <li id="seeClassesBtn"><a href="#">See Requested</a></li>
 	                <li ><a href="profile.php">Profile</a></li>
 	                <li ><a href="settings.php">Settings</a></li>                 
 	                <li class="nav-header">Other</li>
@@ -143,7 +143,7 @@
 	            </div>
 	            <div id="seeClasses" class="inactiveWindow"> 	  
 	              <h2>Classes you created</h2>
-	                       
+	               <?php include "AJAX-PHP/seeClassesProfessor.php";?>         
 	            </div>
 	        <?php }
 	  				else{ //Student's view?>

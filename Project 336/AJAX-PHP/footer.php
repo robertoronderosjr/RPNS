@@ -29,6 +29,12 @@ if(isset($_GET['alert'])){
 	else if($_GET['alert']=='registered'){
 		echo "<script>var alertRegistered=true;</script>";
 	}
+	else if($_GET['alert']=='courseAdded'){
+		echo "<script>var courseAdded=true;</script>";
+	}
+}
+else if(isset($_GET['classEdit'])){	
+	echo "<script>var classEdit='".$_GET['classEdit']."';</script>";	
 }
 
 ?>

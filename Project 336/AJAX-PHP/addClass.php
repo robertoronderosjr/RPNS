@@ -1,6 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
 /**
  * @author Roberto Ronderos Botero
  */
@@ -8,10 +6,8 @@ session_start();
 require ("dbConnection.php");
 
 /*get class information*/
-echo "Course Name: ".$cName=$_POST['cName'];
-echo "</br>";
-echo "Course Major: ".$cMajor=$_POST['cMajor'];
-echo "</br>";
+$cName=$_POST['cName'];
+$cMajor=$_POST['cMajor'];
 
 /*add To Database Basic Information, using table-> Course and tuples: M_ID:int,Name:varchar(45),Managed_By:int,Creation_Date:date*/
 $cName = mysql_real_escape_string($cName);
@@ -30,9 +26,6 @@ $C_ID = $mysql->GetLastInsertID();
 
 /*Add Course offering information, using table->Course_Offering and tuples: C_ID, Semester, MAX_SIZE*/
 $semesterArray=$_POST['semester']; //array
-echo "Course Semesters: ";
-print_r($semesterArray);
-echo "</br>";
 $semesters="";
 $prefix = '';
 foreach ($semesterArray as $semester)
@@ -40,8 +33,7 @@ foreach ($semesterArray as $semester)
     $semesters .= $prefix . '"' . $semester . '"';
     $prefix = ', ';
 }
-echo "Course Max Student: ".$cMaxStudents=$_POST['cMaxStudents'];
-echo "</br>";
+$cMaxStudents=$_POST['cMaxStudents'];
 $cMaxStudents = intval($cMaxStudents);
 $sql = "INSERT INTO Course_Offering (C_ID, Semester, MAX_SIZE) VALUES ('".$C_ID."', '".$semesters."','".$cMaxStudents."')";
 // Execute our query
@@ -54,9 +46,6 @@ $CO_ID = $mysql->GetLastInsertID();
 
 /*Add Course Sections information, using table Course_Section and tuples: CO_ID,Section_Number,Teached_By*/
 $sectionNumber=$_POST['sectionNumber'];//array
-echo "Course Section Numbers: ";
-print_r($sectionNumber);
-echo "</br>";
 
 foreach($sectionNumber as $sectionN){
 	$sql = "INSERT INTO Course_Section (CO_ID,Section_Number,Teached_By) VALUES ('".$CO_ID."', '".$sectionN."','".$managedBy."')";
@@ -72,9 +61,6 @@ foreach($sectionNumber as $sectionN){
 /*Add course Pre-Reqs using table Course_Requirements and tuples: Requirer_ID,Requirement_ID (class id that requires and class id that is required)*/
 
 $cPreReqs=$_POST['cPreReqs']; //array
-echo "Course Pre Reqs: ";
-print_r($cPreReqs);
-echo "</br>";
 foreach($cPreReqs as $preReq){
 	$courseCreated=false;	
 	if(!is_numeric($preReq)){ //there exists a class with that id
@@ -84,12 +70,10 @@ foreach($cPreReqs as $preReq){
 			echo "failed Retrieving Data from Courses : ".$mysql->Error();
 			$mysql -> Kill();
 			exit(1);
-		}
-		echo " row count ".$mysql->RowCount();
+		}		
 		if($mysql->RowCount()>0){
 			$mysql->MoveFirst(); 
 			$row = $mysql->Row();
-			echo " row  ".$row->Name;
 			if(strtolower($row->Name)==strtolower($preReq)){
 				$preReq=  $row->C_ID;
 			}
@@ -138,9 +122,6 @@ foreach($cPreReqs as $preReq){
 
 /*Add Basic Criteria to professor's class using table Prof_Course_Requirements*/
 $basicCriteria=$_POST['basicCriteria'];//array, the order in this array tells the importance for each item
-echo "Basic Criteria used: ";
-print_r($basicCriteria);
-echo "</br>";
 $custiomQuestionsRank;
 foreach($basicCriteria as $rank => $bc){
 	$skip=false;	
@@ -185,26 +166,21 @@ foreach($basicCriteria as $rank => $bc){
 
 
 /*Add Custom Questions*/
-echo "# of Custom Questions: ".$numberOfCustomQuestions=$_POST['numberOfCustomQuestions'];
+$numberOfCustomQuestions=$_POST['numberOfCustomQuestions'];
 $customQuestions=array(); //array containing all custom questions
 for($i=0;$i<intval($numberOfCustomQuestions);$i++){
 	$cq= $_POST['customQuestion_'.($i+1)];
 	array_push($customQuestions,$cq); //add question to customQuestions array	
 }
-print_r($customQuestions);
-echo "</br>";
 if(sizeof($customQuestions)>0){
 	
-	$typeCustomQuestions=$_POST['type'];//array
-	print_r($typeCustomQuestions);
-	echo "</br>";
+	$typeCustomQuestions=$_POST['type'];//array	
 	//get it's type and retrieve its values
 	$i=0;
 	foreach($customQuestions as $question){
 		$valuesArray = array();		
 		$valuesArray[0]=$question;
-		$jsonValues="";
-		echo "Custom Question # ".($i+1)."</br>";		
+		$jsonValues="";		
 		switch($typeCustomQuestions[$i]){ //parallel array with customQuestions
 			case 'ck':
 					//get keywords and importance					
@@ -213,7 +189,6 @@ if(sizeof($customQuestions)>0){
 					foreach($keywordsQuestion as $keyword){
 						$importanceArray = $_POST['ckimportance_'.($i+1)];
 						$importance = $importanceArray[$j];						
-						echo "Keyword: ".$keyword." and importance: ".$importance."</br>";
 						$entry['keyword']=$keyword;
 						$entry['importance']=$importance;
 						$valuesArray[$j+1] = $entry;
@@ -229,7 +204,6 @@ if(sizeof($customQuestions)>0){
 					foreach($checkBoxesQuestion as $checkbox){
 						$importanceArray = $_POST['cbimportance_'.($i+1)];
 						$importance = $importanceArray[$j];						
-						echo "Check Box value: ".$checkbox." and importance: ".$importance."</br>";
 						$entry['checkbox']=$checkbox;
 						$entry['importance']=$importance;
 						$valuesArray[$j+1] = $entry;
@@ -245,7 +219,6 @@ if(sizeof($customQuestions)>0){
 					foreach($radioQuestion as $radio){
 						$importanceArray = $_POST['rbimportance_'.($i+1)];
 						$importance = $importanceArray[$j];						
-						echo "Radio Button value: ".$radio." and importance: ".$importance."</br>";
 						$entry['radio']=$radio;
 						$entry['importance']=$importance;
 						$valuesArray[$j+1] = $entry;
@@ -266,6 +239,8 @@ if(sizeof($customQuestions)>0){
 		$i++;
 	}
 }
+
+header('Location: http://cs336-31.rutgers.edu/index.php?alert=courseAdded');
 
 
 

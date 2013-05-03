@@ -7,7 +7,32 @@ var counter;
 var customQuestionCounter=0;
 var selectedCustomCriteria="0";
 var selectedPreReq;
+var editing;
 $(document).ready(function() {
+	
+	/*read url parameter to see if we need to edit a class*/	
+	if ( typeof (classEdit) != "undefined" && classEdit !== null && classEdit != "") {
+			editing=true;
+			var courseID=classEdit;
+			fillClassForm(courseID);
+			if ($('#addClass').hasClass('inactiveWindow')) {
+				$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
+				$('#addClass').removeClass('inactiveWindow').addClass('activeWindow');
+				$("#addClass").prepend('<button id="goBackBtn" class="btn btn-success pull-right">Go Back</button>');
+				$('#addClass').children('h2').eq(0).html('See/Edit Class');				
+				$('#navigationBarLeft .active').removeClass('active');
+				$('#seeClassesBtn').addClass('active');
+				$("#addClass #submitBtn").html('Edit Class');
+				$("#clear").remove();
+			}			
+	}
+	
+	/*alert class added*/
+	if ( typeof (courseAdded) != "undefined" && courseAdded !== null && courseAdded != "") {
+			if (courseAdded) {
+				alertWindow("Success!", "You added a new course to the System.", "alert-success");
+			}
+		}
 
 	/*course pre-reqs auto-complete*/
 	$(".prereqsfields").autocomplete({
@@ -107,11 +132,24 @@ $(document).ready(function() {
 	});
 
 	$("#addClassdBtn").click(function() {
-		if ($('#addClass').hasClass('inactiveWindow')) {
+		console.log(editing);
+		if(!editing){
+			if ($('#addClass').hasClass('inactiveWindow')) {
+				$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
+				$('#addClass').removeClass('inactiveWindow').addClass('activeWindow');
+				$('#navigationBarLeft .active').removeClass('active');
+				$(this).addClass('active');
+			}
+		}
+		else{
 			$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
 			$('#addClass').removeClass('inactiveWindow').addClass('activeWindow');
+			$('#addClass').children('h2').eq(0).html('Add a class');
 			$('#navigationBarLeft .active').removeClass('active');
-			$(this).addClass('active');
+			$('#addClassdBtn').addClass('active');
+			//resetForm
+			resetForm();
+			editing=false;
 		}
 	});
 
@@ -123,6 +161,10 @@ $(document).ready(function() {
 			$(this).addClass('active');
 		}
 	});
+	
+	$("#clear").click(function(){
+		resetForm();		
+	})
 
 	$("#addPreReqs").click(function() {
 		var row = '<input type="text" class="input prereqsfields" placeholder="Course Name"/>\
@@ -400,9 +442,131 @@ $(document).ready(function() {
 		}
 	});
 	
+	$('#seeClasses').on('click', "#seeEditClass", function(){	
+		var cid = $(this).attr('classID');
+		window.location.href = "http://cs336-31.rutgers.edu/index.php?classEdit="+cid;
+	});
+	$('#addClass').on('click', "#goBackBtn", function(){			
+		$('#seeClassesBtn').click();		
+	});
 	
 
 });
+
+function resetForm(){
+	$("#addClass").empty();
+			$('#addClass').load('AJAX-PHP/addClassProfessor.html',function(){
+				$(this).prepend('<h2>Add a class</h2>')
+			loadMajors('#cMajor');
+			$(".prereqsfields").autocomplete({
+			      source: "AJAX-PHP/loadCourses.php",
+			      minLength: 2,
+			      open: function (event,ui) {
+			        selectedPreReq=false;
+			        
+			      },
+			      select: function( event, ui ) {  
+			      	$(this).next().next().attr('value',ui.item.id);
+			      	selectedPreReq=true;
+			      	
+			      },
+			      change: function(event,ui){
+			      	if(!selectedPreReq){
+				      	var val = $(this).val();
+				      	$(this).next().next().attr('value',val);
+				    }
+			      }
+			    });
+			    $(".sortable").sortable({
+					connectWith : '.sortable',
+					placeholder : "ui-state-highlight",
+					items : "li:not(.ui-state-disabled)"
+				});
+				$(".sortable.unordered").on("sortreceive", function(event, ui) {
+					receivedItem = $(ui.item);
+					receivedItem.find('input').attr('disabled','disabled');
+					if(receivedItem.hasClass('customQuestion')){
+						customQuestionCounter--;
+						$("#numberOfCustomQuestions").attr('value',customQuestionCounter);
+						$("#customCriteria .q"+(customQuestionCounter+1)).remove();
+						var q = '.q'+(customQuestionCounter+1);
+						$(this).find(q).remove();
+					}
+					
+				});
+			
+				$(".sortable.ordered").on("sortreceive", function(event, ui) {
+					receivedItem = $(ui.item);
+					var modalTitle = $("#criteriaModalLabel");
+					var modalBodyContent = $("#criteriaModal .modal-body");
+					var bodyContent;
+					receivedItem.find('input').removeAttr('disabled');
+					if (receivedItem.attr('value') == 'universityYear') {
+						bodyContent = '<div class="control-group">' + '<label class="control-label" for="year"><b>Please select which year is prefered for this class:</b></label>' + '<br/>' + '<div class="controls">' + '<input type="radio" name="preferedYearModal" value="freshman">' + 'Freshman' + '<br>' + '<input type="radio" name="preferedYearModal" value="sophomore">' + 'Sophomore' + '<br>' + '<input type="radio" name="preferedYearModal" value="junior">' + 'Junior' + '<br>' + '<input type="radio" name="preferedYearModal" value="senior">' + 'Senior' + '<br>' + '</div>' + '<br/>' + '</div>';
+			
+						modalTitle.html('University Year Prefered');
+						modalBodyContent.html(bodyContent);
+						$("#criteriaModal").modal("show");
+			
+					} else if (receivedItem.attr('value') == 'creditsCompleted') {
+						bodyContent = '<div class="control-group">' + '<label class="control-label" for="numberCreditsModal"><b>Specify the minimum preferred number of credits (inclusive):</b></label>' + '<br/>' + '<div class="controls">' + '<input type="text" id="numberCreditsModal" name="numberCreditsModal" placeholder="Number of credits" value="">' + '</div>' + '<br/>' + '</div>';
+			
+						modalTitle.html('Prefered number of credits');
+						modalBodyContent.html(bodyContent);
+						$("#criteriaModal").modal("show");
+					} else if (receivedItem.attr('value') == 'gradesPreReq') {
+						bodyContent = '<div class="control-group">' + '<label class="control-label" for="preferedGradeModal"><b>Specify the minimum preferred grade for pre-reqs:</b></label>' + '<br/>' + '<div class="controls">' + '<input type="radio" name="preferedGradeModal" value="D">' + 'D' + '<br>' + '<input type="radio" name="preferedGradeModal" value="C">' + 'C' + '<br>' + '<input type="radio" name="preferedGradeModal" value="B">' + 'B' + '<br>' + '<input type="radio" name="preferedGradeModal" value="A">' + 'A' + '<br>' + '</div>' + '<br/>' + '</div>';
+			
+						modalTitle.html('Prefered minimum grade');
+						modalBodyContent.html(bodyContent);
+						$("#criteriaModal").modal("show");
+					} else if (receivedItem.attr('value') == 'gpa') {
+						bodyContent = '<div class="control-group">' + '<label class="control-label" for="gpaModal"><b>Specify the minimum preferred G.P.A. (inclusive):</b></label>' + '<br/>' + '<div class="controls">' + '<input type="text" id="gpaModal" name="gpaModal" placeholder="Minimum GPA" value="">' + '</div>' + '<br/>' + '</div>';
+			
+						modalTitle.html('Prefered minimum G.P.A.');
+						modalBodyContent.html(bodyContent);
+						$("#criteriaModal").modal("show");
+					} else if (receivedItem.attr('value') == 'major') {
+			
+						bodyContent = '<div class="control-group">' + '<label class="control-label" for="cMajorModal"><b>Major:</b></label>' + '<br>' + '<div class="controls">' + '<select id="cMajorModal"></select>' + '</div>' + '</div>';
+						modalTitle.html('Prefered Major');
+						modalBodyContent.html(bodyContent);
+						loadMajors('#cMajorModal');
+						$("#criteriaModal").modal("show");
+					}
+			
+				});
+			    $("#addSection").click(function() {
+					var rowSectionNumber = '<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required><BR>';
+					
+					$("#sectionNumbersDiv").append(rowSectionNumber);
+				});
+				$("#addPreReqs").click(function() {
+					var row = '<input type="text" class="input prereqsfields" placeholder="Course Name"/>\
+									<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value=""/><BR>';
+					$("#cPreReqs").append(row);
+					$(".prereqsfields").autocomplete({
+				      source: "AJAX-PHP/loadCourses.php",
+				      minLength: 2,
+				      open: function (event,ui) {
+					        selectedPreReq=false;
+					        
+					      },
+					      select: function( event, ui ) {  
+					      	$(this).next().next().attr('value',ui.item.id);
+					      	selectedPreReq=true;
+					      	
+					      },
+					      change: function(event,ui){
+					      	if(!selectedPreReq){
+						      	var val = $(this).val();
+						      	$(this).next().next().attr('value',val);
+						    }
+					      }
+				    });
+				});
+		});
+}
 
 function loadUniversities() {
 	$('#universitiesM').empty();
@@ -513,4 +677,111 @@ function alertWindow(alertInfo, alertDesc, type) {
 	window.setTimeout(function() {
 		$("#AlertWindow").slideUp();
 	}, 5000);
+}
+
+function fillClassForm(C_ID){
+	$.ajax({		  
+		  url: "AJAX-PHP/getCourse.php",
+		  data: { C_ID: C_ID }	  
+		}).done(function( data ) {	
+			   console.log(data);
+			   			
+			   var course = jQuery.parseJSON(data);
+			   $("#cName").val(course.Name);	
+			   $("#cMaxStudents").val(course.MAX_SIZE);			   
+			   $('#cMajor option[value='+course.Major+']').prop('selected', true);
+			   for(i=0;i<course.Requirements.length;i++){				   		
+						if(i==0){
+							$("#cPreReqs").children('input').eq(0).val(course.Requirements[i].Name);
+							$("#cPreReqs").children('input').eq(1).val(course.Requirements[i].C_ID);
+						}
+						else{
+							var row = '<input type="text" class="input prereqsfields" placeholder="Course Name" value="'+course.Requirements[i].Name+'"/>\
+											<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value="'+course.Requirements[i].C_ID+'"/><BR>';
+							$("#cPreReqs").append(row);
+						}			   		
+			   }
+			   for(i=0;i<course.Semesters.length;i++){
+			   		     $("#semestersAvailable input[value='"+course.Semesters[i]+"']").attr('checked','checked');
+			   }
+			   for(i=0;i<course.Sections.length;i++){
+			   		if(i==0){
+			   			$("#sectionNumbersDiv").children('input').eq(0).val(course.Sections[i].Section_Number);
+			   		}
+			   		else{
+			   			$("#sectionNumbersDiv").append('<input id="sectionNumber" name="sectionNumber[]" \
+			   			class="input-medium  input" type="text" placeholder="Section Number" value="'+course.Sections[i].Section_Number+'"><br>')
+			   		}
+			   }			   
+			   
+			   sortable2
+			   for(i=0;i<course.Used_Criteria.length;i++){
+			   		switch(course.Used_Criteria[i].Type){
+			   			case 'requestedDate':
+			   				$("#sortable1 li[value=requestedDate]").clone().appendTo('#sortable2');
+			   				$("#sortable1 li[value=requestedDate]").remove();
+			   				break;
+			   			case 'universityYear':
+			   				$("#sortable1 li[value=universityYear]").clone().appendTo('#sortable2');
+			   				$("#sortable1 li[value=universityYear]").remove();
+			   				$("#yearPreferred").val(course.Used_Criteria[i].Values);
+			   				break;
+			   			case 'creditsCompleted':
+			   				$("#sortable1 li[value=creditsCompleted]").clone().appendTo('#sortable2');
+			   				$("#sortable1 li[value=creditsCompleted]").remove();
+			   				$("#preferedCredits").val(course.Used_Criteria[i].Values);
+			   				break;
+			   			case 'gradesPreReq':
+			   				$("#sortable1 li[value=gradesPreReq]").clone().appendTo('#sortable2');
+			   				$("#sortable1 li[value=gradesPreReq]").remove();
+			   				$("#preferedGradePreReqs").val(course.Used_Criteria[i].Values);
+			   				break;
+			   			case 'major':
+			   				$("#sortable1 li[value=major]").clone().appendTo('#sortable2');
+			   				$("#sortable1 li[value=major]").remove();
+			   				$("#preferedMajor").val(course.Used_Criteria[i].Values);
+			   				break;
+			   			case 'gpa':
+			   				$("#sortable1 li[value=gpa]").clone().appendTo('#sortable2');
+			   				$("#sortable1 li[value=gpa]").remove();
+			   				$("#preferedGPA").val(course.Used_Criteria[i].Values);
+			   				break;
+			   			
+			   		}
+			   }
+			   /*$("#practiceType").val(obj.Type);
+			   $("#initInvest").val(obj.Initial_Investment);
+			   $("#costBenef").val(obj.Cost_Benefits);
+			   $("#coBenefits").val(obj.Co_Benefits);
+			   $("#requiredByLaw").val(obj.Required_By_Law);
+			   $("#impactEmissions").val(obj.ImpactEmissions);
+			   $("#practices-form #adminDivsDDB").val(obj.Admin_Division);
+			   $("#practices-form #urbalRuralGradDDB").val(obj.Urban_Rural_Gradient);
+			   $("#timeToImplement").val(obj.Time_to_Implement);
+			   $("#timeToBenefit").val(obj.Time_to_Benefit);
+			   $("#profAssistance").val(obj.Prof_Assistance);
+			   infrastructures that are required
+			   $("#infraTypes2 input").removeAttr('checked');
+			   for(i=0;i<obj.Infrastructures_required.length;i++){
+				   		console.log(obj.Infrastructures_required[i]+'checked');
+					   $("#infraTypes2 input[value='"+obj.Infrastructures_required[i]+"']").attr('checked','checked');
+			   }
+			  
+			  $("#linkList").html("<input id='urls[]' name='urls[]' type='text' class='input-xlarge input' placeholder='Link Url'>")
+			   for(i=0;i<obj.linkURLS.length;i++){
+			   			console.log(obj.linkURLS[i])				   		
+						if(i==0){
+							$("#linkList input").val(obj.linkURLS[i]);
+						}
+						else{
+							$("#linkList").append("<input id='urls[]' name='urls[]' type='text' class='input-xlarge input' value='"+obj.linkURLS[i]+"'>")	
+						}			   		
+			   }			   
+			   	   
+			   
+			   
+			   $("#submitBtnP").html("Edit Practice »");
+			   $("#practices-form").attr("action","../ajax/editPractice.php");*/
+		});	
+	
 }
