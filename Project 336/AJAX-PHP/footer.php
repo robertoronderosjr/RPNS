@@ -13,7 +13,12 @@
     <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
-    <script type="text/javascript" src="js/registration.js"></script>
+    <?php if(strpos(curPageURL(), "registration.php")>0){ ?>
+		<script type="text/javascript" src="js/registration.js"></script>
+	<?php }else if(strpos(curPageURL(), "registration.php")>0){ ?>
+		<script type="text/javascript" src="js/updateProfile.js"></script>
+   	<?php } ?>
+    </script>
     <?php if($_SESSION['type']==2){ ?>
     <script type="text/javascript" src="js/professor.js"></script>
     <?php } else{ ?>
@@ -37,4 +42,16 @@ else if(isset($_GET['classEdit'])){
 	echo "<script>var classEdit='".$_GET['classEdit']."';</script>";	
 }
 
+
+function curPageURL() {
+ $pageURL = 'http';
+ if ($_SERVER["HTTPS"] == "on") {$pageURL .= "s";}
+ $pageURL .= "://";
+ if ($_SERVER["SERVER_PORT"] != "80") {
+  $pageURL .= $_SERVER["SERVER_NAME"].":".$_SERVER["SERVER_PORT"].$_SERVER["REQUEST_URI"];
+ } else {
+  $pageURL .= $_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"];
+ }
+ return $pageURL;
+}
 ?>
