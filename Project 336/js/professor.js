@@ -23,6 +23,7 @@ $(document).ready(function() {
 				$('#navigationBarLeft .active').removeClass('active');
 				$('#seeClassesBtn').addClass('active');
 				$("#addClass #submitBtn").html('Edit Class');
+				$("#addClass").find('form').attr("action","AJAX-PHP/editClass.php");
 				$("#clear").remove();
 			}			
 	}
@@ -132,7 +133,7 @@ $(document).ready(function() {
 	});
 
 	$("#addClassdBtn").click(function() {
-		console.log(editing);
+		
 		if(!editing){
 			if ($('#addClass').hasClass('inactiveWindow')) {
 				$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
@@ -749,39 +750,7 @@ function fillClassForm(C_ID){
 			   			
 			   		}
 			   }
-			   /*$("#practiceType").val(obj.Type);
-			   $("#initInvest").val(obj.Initial_Investment);
-			   $("#costBenef").val(obj.Cost_Benefits);
-			   $("#coBenefits").val(obj.Co_Benefits);
-			   $("#requiredByLaw").val(obj.Required_By_Law);
-			   $("#impactEmissions").val(obj.ImpactEmissions);
-			   $("#practices-form #adminDivsDDB").val(obj.Admin_Division);
-			   $("#practices-form #urbalRuralGradDDB").val(obj.Urban_Rural_Gradient);
-			   $("#timeToImplement").val(obj.Time_to_Implement);
-			   $("#timeToBenefit").val(obj.Time_to_Benefit);
-			   $("#profAssistance").val(obj.Prof_Assistance);
-			   infrastructures that are required
-			   $("#infraTypes2 input").removeAttr('checked');
-			   for(i=0;i<obj.Infrastructures_required.length;i++){
-				   		console.log(obj.Infrastructures_required[i]+'checked');
-					   $("#infraTypes2 input[value='"+obj.Infrastructures_required[i]+"']").attr('checked','checked');
-			   }
-			  
-			  $("#linkList").html("<input id='urls[]' name='urls[]' type='text' class='input-xlarge input' placeholder='Link Url'>")
-			   for(i=0;i<obj.linkURLS.length;i++){
-			   			console.log(obj.linkURLS[i])				   		
-						if(i==0){
-							$("#linkList input").val(obj.linkURLS[i]);
-						}
-						else{
-							$("#linkList").append("<input id='urls[]' name='urls[]' type='text' class='input-xlarge input' value='"+obj.linkURLS[i]+"'>")	
-						}			   		
-			   }			   
-			   	   
 			   
-			   
-			   $("#submitBtnP").html("Edit Practice »");
-			   $("#practices-form").attr("action","../ajax/editPractice.php");*/
 		});	
 	
 }

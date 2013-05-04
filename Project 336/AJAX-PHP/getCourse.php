@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 /**
  * @author Roberto Ronderos Botero
  */
@@ -53,7 +55,6 @@ if (!$mysql -> Query($sql)) {
 	$mysql -> Kill();
 	exit(1);
 }
-$mysql->GetHTML();
 $mysql->MoveFirst(); 
 
 while (! $mysql->EndOfSeek()) { 
@@ -66,7 +67,10 @@ while (! $mysql->EndOfSeek()) {
 
 /*Get course requirements*/
 $courseArray['Requirements']=array();
-$sql = "SELECT * FROM Course_Requirements WHERE Requirer_ID='".$C_ID."'";
+$sql = "SELECT cr.`Requirement_ID` , c.`Name` 
+		FROM  `Course_Requirements` AS cr,  `Course` AS c
+		WHERE c.`C_ID` = cr.`Requirement_ID` 
+		AND cr.`Requirer_ID` =  '".$C_ID."'";
 // Execute our query
 if (!$mysql -> Query($sql)) {
 	echo "Failed retrieving Course Requirements: ".$mysql->Error();
@@ -75,21 +79,10 @@ if (!$mysql -> Query($sql)) {
 }
 $mysql->MoveFirst(); 
 while (! $mysql->EndOfSeek()) { 
-    $row = $mysql->Row();
-	$sql2 = "SELECT Name FROM Course WHERE C_ID='".$row->Requirement_ID."'";
-	// Execute our query
-	$mysql2 = new MySQL(true,DBNAME, DBHOST, DBUSERNAME, DBPASSWORD);
-	if ($mysql2->Error()) $mysql2->Kill();  
-	if (!$mysql2 -> Query($sql2)) {
-		echo "Failed retrieving Course Name: ".$mysql2->Error();
-		$mysql2 -> Kill();
-		exit(1);
-	} 
-	$mysql2->MoveFirst(); 
-	$row2= $mysql2->Row();
+    $row = $mysql->Row();	
 	$requirement=array();
 	$requirement['C_ID'] =$row->Requirement_ID;
-	$requirement['Name'] = $row2->Name;
+	$requirement['Name'] = $row->Name;
 	array_push($courseArray['Requirements'],$requirement);
 } 
 
