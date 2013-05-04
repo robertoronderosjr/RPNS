@@ -7,7 +7,7 @@
         <p>&copy; Rutgers University 2013</p>
       </footer>
       
-    </div> <!-- /container -->
+    </div> <!-- /container  -->
 	<script type="text/javascript" src="js/jquery-1.9.1.min.js"></script>
     <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js" type="text/javascript"></script>
     <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
