@@ -20,18 +20,18 @@
 	        <div class="row"> 
 	            <div class="span7">
 	            	<div class="well">
-	                	<form id="signup" class="form-horizontal" method="post" action="AJAX-PHP/register.php">
+	                	<form id="profile" class="form-horizontal" method="post" action="AJAX-PHP/register.php">
                         <legend><?php echo $_SESSION["netid"]; ?></legend>
-                        <div class="control-group success">
+                        <div class="control-group">
                             <label class="control-label" for="fname">First Name</label>
-                            <div class="controls success">
+                            <div class="controls">
                                 <div class="input-prepend">
                                     <span class="add-on"><i class="icon-user"></i></span>
                                     <input type="text" id="fname" name="fname" value="<?php echo $userprofileinfo["fname"]; ?>" placeholder="First Name">
                                 </div>
                             </div>
                         </div>
-                        <div class="control-group success">
+                        <div class="control-group">
                             <label class="control-label" for="lname">Last Name</label>
                             <div class="controls">
                                 <div class="input-prepend">
@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="control-group success">
+                        <div class="control-group">
                             <label class="control-label" for="email">Email</label>
                             <div class="controls">
                                 <div class="input-prepend">
@@ -53,12 +53,12 @@
                             <label class="control-label" for="gender">Gender</label>
                             <div class="controls">
                                     <p><div id="gender" name="gender" class="btn-group" data-toggle="buttons-radio">
-                                    <button <?php echo $userprofileinfo["gender"]=="m"? "class=\"btn btn-info active\"":"class=\"btn btn-info\""; ?> type="button" id="maleGender" >Male</button>
-                                    <button <?php echo $userprofileinfo["gender"]=="f"? "class=\"btn btn-info active\"":"class=\"btn btn-info\""; ?> type="button" id="femaleGender" >Female</button>
+                                    <button <?php echo $userprofileinfo["gender"] == "m" ? "class=\"btn btn-info active\"" : "class=\"btn btn-info\""; ?> type="button" id="maleGender" >Male</button>
+                                    <button <?php echo $userprofileinfo["gender"] == "f" ? "class=\"btn btn-info active\"" : "class=\"btn btn-info\""; ?> type="button" id="femaleGender" >Female</button>
                                   </div></p>
                             </div>
                         </div>
-                        <div class="control-group success">
+                        <div class="control-group">
                             <label class="control-label" for="dob">Date of Birth</label>
                             <div class="controls">
                                  <div id="datetimepicker" class="input-prepend">
@@ -70,11 +70,12 @@
                             </div>
                         </div>   
                         <div class="control-group">
-                            <label class="control-label" for="passwd">Old Password</label>
+                            <label class="control-label" for="oldpass">Old Password</label>
                             <div class="controls">
                                 <div class="input-prepend">
                                 <span class="add-on"><i class="icon-lock"></i></span>
-                                    <input type="Password" id="oldpass"  name="oldpass" placeholder="Password">
+                                    <input  type="Password" id="oldpassSeen" placeholder="Old Password">
+                                    <input  type="hidden" id="oldpass"  name="oldpass" placeholder="Old Password">
                                 </div>
                             </div>
                         </div>  
@@ -99,11 +100,9 @@
                         <div class="control-group">
                             <label class="control-label"></label>
                             <div class="controls">
-                             <button type="submit" class="btn btn-success" >Save Settings</button>    
-                            </div>
-                
-                        </div>
-                        
+                            	<button type="submit" class="btn btn-success" >Save Settings</button>    
+                            </div>                
+                        </div>                        
                                                
                         <input type="hidden" id="genderHidden" name="genderHidden" value="">
                         
@@ -114,6 +113,8 @@
 	        <?php } else { ?>
 	        <?php } ?>
 	    </div> 
-    <?php }?>	
+    <?php } ?>	
  </div>
 <?php include "AJAX-PHP/footer.php" ?>
+
+<script type="text/javascript" src="js/updateProfile.js"></script>

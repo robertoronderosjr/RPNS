@@ -13,9 +13,13 @@
     <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/bootstrap-datetimepicker.min.js"></script>
-    <?php if(strpos(curPageURL(), "registration.php")>0){ ?>
+    <?php 
+    	$query = $_SERVER['PHP_SELF'];
+		$path = pathinfo( $query );
+		$file = $path['basename'];
+    	if(strcmp($file, "registration.php")==0){ ?>
 		<script type="text/javascript" src="js/registration.js"></script>
-	<?php }else if(strpos(curPageURL(), "registration.php")>0){ ?>
+	<?php }else if(strcmp($file,"registration.php")>0){ ?>
 		<script type="text/javascript" src="js/updateProfile.js"></script>
    	<?php } ?>
     </script>

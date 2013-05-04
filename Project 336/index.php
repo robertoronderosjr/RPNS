@@ -164,6 +164,14 @@
 					<strong>Error!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
 					<p>There's an error in one requests.</p>				
 				  </div>                
+	            </div>
+	            <div id="requestPermission" class="inactiveWindow"> 	  
+	              <h2>Request a Special Permission Number</h2>
+	               <?php include "AJAX-PHP/requestPermission.html";?>              
+	            </div>
+	            <div id="seeRequested" class="inactiveWindow"> 	  
+	              <h2>See Requested Permission Numbers</h2>
+	               <?php include "AJAX-PHP/seeRequested.php";?>         
 	            </div>	  					
 	  	    <?php }?>	
        </div>        

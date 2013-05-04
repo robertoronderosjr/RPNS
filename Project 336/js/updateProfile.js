@@ -2,6 +2,13 @@
  * Author: David Zafrani
  */
 $(document).ready(function() {
+	
+	$("#oldpassSeen").change(function() {
+		$("#oldpass").val($(this).val());
+		$("#profile").validate().element("#oldpass");
+	});
+	
+	
 	if(typeof(alertInvalidLogin) != "undefined" && alertInvalidLogin !== null && alertInvalidLogin!="") {
 		 if(alertInvalidLogin==true){
 			$("#invalidLoginAlert").show();					
@@ -32,22 +39,8 @@ $(document).ready(function() {
 			 }, 
 			 "Alpha Characters Only."
 	 );	
-	$.validator.addMethod('checkPassword', function(value, element) {
-		$.ajax({
-  			url: "../AJAX-PHP/updateProfileJax.php",
-  			context: document.body
-		}).done(function ( data ) {
-  			if( console && console.log ) {
-    			console.log("Sample of data:", data.slice(0, 100));
-    			return true;
- 			}	
-		});
-        
-    },
-    'No.');
-	
 	//validation
-	$("#signup").validate({
+	$("#profile").validate({
         rules: {
             fname: {
                 required: true,
@@ -67,15 +60,16 @@ $(document).ready(function() {
 			dob:{
 				date: true	
 			},
-            netid: {
-                required: true,
-                remote: "../AJAX-PHP/checkNetID.php"
-            } ,
+			oldpass:{
+				required:true,
+				minlength: 7,
+				strongPassword:true,	
+                remote: "../AJAX-PHP/checkPassword.php"				
+			},
 			passwd:{
 				required:true,
 				minlength: 7,
-				strongPassword:true,
-				checkPassword:true				
+				strongPassword:true			
 			},
 			conpasswd:{
 				required:true,
@@ -107,10 +101,15 @@ $(document).ready(function() {
 				required: "Your NetID is required",
 				remote: "That NetID is already registered in our system"
 			},
+			oldpass:{
+				required: "Password Required",
+				minlength: "You need at least {0} characters in your password",
+				remote: "Invalid password"			
+			},
 			passwd:{
 				required: "Password Required",
 				minlength: "You need at least {0} characters in your password",
-				checkPassword: "Password doesn't match"
+				remote: "Invalid password"
 			},
 			conpasswd:{
 				required: "Password confirmation required",

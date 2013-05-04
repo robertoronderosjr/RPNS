@@ -106,6 +106,8 @@ while (! $mysql->EndOfSeek()) {
     array_push($courseArray['Used_Criteria'],$criteria);
 } 
 
+
+
 echo json_encode($courseArray);
  
 
