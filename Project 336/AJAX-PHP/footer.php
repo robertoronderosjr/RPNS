@@ -25,6 +25,7 @@
     </script>
     <?php if(isset($_SESSION['type']) && $_SESSION['type']==2){ ?>
     <script type="text/javascript" src="js/professor.js"></script>
+    <script type="text/javascript" src="js/addSPNS.js"></script>
     <?php } else if(isset($_SESSION['type'])&& $_SESSION['type']==1){ ?>
     <script type="text/javascript" src="js/student.js"></script>
     <?php } ?>

@@ -23,7 +23,9 @@ if($mysql->RowCount()>0){
 		echo '<div class="accordion-group">';
 			echo '<div class="accordion-heading" > <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPracticeCats" href="#collapse'.$row -> C_ID.'">
 				  <span><span>///</span> '.$row -> Name.'</span>
-				  </a><button id="seeEditClass" type="button" class="btn btn-primary pull-right" style="position: relative;top: -33px;" classID="'.$row -> C_ID.'" coid="'.$row->CO_ID.'">See/Edit</button>				  
+				  </a>
+				  <a href="#addSPNSModal" role="button" class="btn btn-primary pull-right" data-toggle="modal" style="position: relative;top: -33px;" classID="'.$row -> C_ID.'" coid="'.$row->CO_ID.'">Add SP#\'s</a>
+				  <button id="seeEditClass" type="button" class="btn btn-primary pull-right" style="position: relative;top: -33px;left:-10px" classID="'.$row -> C_ID.'" coid="'.$row->CO_ID.'">See/Edit</button>				  
 				   </div>';
 			echo '<div id="collapse'.$row -> C_ID.'" class="accordion-body collapse">';
 				echo '<div class="accordion-inner"> ';			

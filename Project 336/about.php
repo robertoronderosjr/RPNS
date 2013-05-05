@@ -21,7 +21,7 @@
             </tr>
             <tr>
             	<td><img src="img/catalina.png"></td>
-                <td><h2>Catalina</h2> She shared an equal investment in Cotino as Roberto, there is rumor these two are quite the love birds.</td>
+                <td><h2>Catalina</h2> She shared an equal investment in RPNS as Roberto, there is rumor these two are quite the love birds.</td>
             </tr>
             <tr>
             	<td width="50%"><img src="img/david.png"></td>

@@ -48,7 +48,8 @@ $(document).ready(function() {
 		else{
 			alertWindow("Error!", "Please select a value from all drop down boxes.", "alert-error");
 		}
-	});
+	});	
+	
 	
 })
 

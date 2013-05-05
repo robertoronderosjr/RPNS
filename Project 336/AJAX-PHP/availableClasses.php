@@ -6,6 +6,9 @@ ini_set('display_errors', '1');
  */
 require ("dbConnection.php");
 
+echo "<script>";
+include_once("../js/request.js");
+echo "</script>";
 
 $query = "SELECT c.`C_ID`, c.`Name`, cr.`CO_ID`
 		  FROM Course as c, Course_Offering as cr, Majors as m
@@ -33,7 +36,7 @@ if($num_rows >0){
 				  </a></div>';
 			echo '<div id="collapse'.$row['C_ID'].'" class="accordion-body collapse">';
 				echo '<div class="accordion-inner"> ';			
-					echo "
+					echo "<form id='".$row['C_ID']."' method='post'>
 						  	<h5>Please fill out the following form</h5>						    	
 						  	<label for='sections'>Choose a Section</label>
 						  	<select id='sections'>";
@@ -135,6 +138,11 @@ if($num_rows >0){
 										break;
 								}	
 							}
+							
+							echo "<br/><button id='requestSPN' class='btn btn-success pull-right'>Request SPN</button><br/><br/>
+							<input name='C_ID' value='".$row['C_ID']."' />
+							<input name='CO_ID' value='' />
+							</form>";
 				echo '</div>';//close accordion-inner
 			echo '</div>';//close collapseGroup
 		echo '</div>';//close accordion group
