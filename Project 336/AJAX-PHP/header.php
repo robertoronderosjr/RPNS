@@ -100,7 +100,7 @@ function echoActiveClassIfRequestMatches($requestUri)
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">Project 336</a>
+          <a class="brand" href="index.php">RPNS</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li <?php echoActiveClassIfRequestMatches("index")?>><a href="index.php">Home</a></li>

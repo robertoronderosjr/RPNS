@@ -23,9 +23,9 @@
 		<script type="text/javascript" src="js/updateProfile.js"></script>
    	<?php } ?>
     </script>
-    <?php if($_SESSION['type']==2){ ?>
+    <?php if(isset($_SESSION['type']) && $_SESSION['type']==2){ ?>
     <script type="text/javascript" src="js/professor.js"></script>
-    <?php } else{ ?>
+    <?php } else if(isset($_SESSION['type'])&& $_SESSION['type']==1){ ?>
     <script type="text/javascript" src="js/student.js"></script>
     <?php } ?>
 </body>

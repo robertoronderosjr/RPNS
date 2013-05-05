@@ -16,7 +16,7 @@
     <?php }else {$userprofileinfo=getUserInfoForProfile($_SESSION["netid"]); ?>	
     	
 	    <div class="hero-unit">
-	        <h2>Welcome, <?php if($_SESSION['type']==2){ echo " Professor ".$_SESSION['lastname']; ?></h2>
+	        <h2>Welcome, <?php if($_SESSION['type']==2){ echo " Professor ".$_SESSION['lastname']; }else{echo $_SESSION['name'];} ?></h2>
 	        <div class="row"> 
 	            <div class="span7">
 	            	<div class="well">
@@ -112,11 +112,9 @@
 	               </div>
 	           </div>
            </div>
-	        <?php } else { ?>
-	        <?php } ?>
 	    </div> 
     <?php } ?>	
- </div>
+
 <?php include "AJAX-PHP/footer.php" ?>
 
 <script type="text/javascript" src="js/updateProfile.js"></script>

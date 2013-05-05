@@ -56,7 +56,8 @@
       <?php }
 	  		else{ ?>    
       <div class="hero-unit">
-        <h2>Welcome, <?php if($_SESSION['type']==2){ echo " Professor ".$_SESSION['lastname']; }else{echo $_SESSION['name'];} ?></h2>
+        <h2>R.P.N.S. - Rutgers Permission Number System</h2>
+        <h3>Welcome, <?php if($_SESSION['type']==2){ echo " Professor ".$_SESSION['lastname']; }else{echo $_SESSION['name'];} ?></h3>
         <p>Choose an option from the Actions menu to start.</p>
       </div> 
       
