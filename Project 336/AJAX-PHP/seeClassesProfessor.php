@@ -5,7 +5,7 @@
 require ("dbConnection.php");
 
 
-$query = "SELECT C_ID,Name FROM Course WHERE Managed_By='".$_SESSION['netid']."'";
+$query = "SELECT c.C_ID,c.Name,co.CO_ID FROM Course as c,Course_Offering as co WHERE c.C_ID=co.C_ID AND c.Managed_By='".$_SESSION['netid']."'";
 if (!$mysql -> Query($query)) {
 	echo "Failed retrieving courses: ".$mysql->Error();
 	$mysql -> Kill();
@@ -23,7 +23,7 @@ if($mysql->RowCount()>0){
 		echo '<div class="accordion-group">';
 			echo '<div class="accordion-heading" > <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPracticeCats" href="#collapse'.$row -> C_ID.'">
 				  <span><span>///</span> '.$row -> Name.'</span>
-				  </a><button id="seeEditClass" type="button" class="btn btn-primary pull-right" style="position: relative;top: -33px;" classID="'.$row -> C_ID.'">See/Edit</button>				  
+				  </a><button id="seeEditClass" type="button" class="btn btn-primary pull-right" style="position: relative;top: -33px;" classID="'.$row -> C_ID.'" coid="'.$row->CO_ID.'">See/Edit</button>				  
 				   </div>';
 			echo '<div id="collapse'.$row -> C_ID.'" class="accordion-body collapse">';
 				echo '<div class="accordion-inner"> ';			

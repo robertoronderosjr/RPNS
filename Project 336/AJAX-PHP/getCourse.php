@@ -60,6 +60,7 @@ $mysql->MoveFirst();
 while (! $mysql->EndOfSeek()) { 
     $row = $mysql->Row();
 	$section = array();
+	$section['CS_ID']= $row->CS_ID;
 	$section['Section_Number'] =  $row->Section_Number; 
 	$section['Teached_By'] =  $row->Teached_By; 
 	array_push($courseArray['Sections'],$section);

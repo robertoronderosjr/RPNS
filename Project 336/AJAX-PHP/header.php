@@ -126,9 +126,9 @@ function echoActiveClassIfRequestMatches($requestUri)
                     <span class="caret"></span>
                   </a>              
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                      <li><a tabindex="-1" href="#">Profile</a></li>
-                      <li><a tabindex="-1" href="#">Settings</a></li>
-                      <li><a tabindex="-1" href="#">Help</a></li>
+                      <li><a tabindex="-1" href="profile.php">Profile</a></li>
+                      <li><a tabindex="-1" href="settings.php">Settings</a></li>
+                      <li><a tabindex="-1" href="help.php">Help</a></li>
                       <li class="divider"></li>                      
                       <li><a tabindex="-1" href="/AJAX-PHP/logout.php">Log Out</a></li>                      	
                     </ul>              

@@ -43,7 +43,7 @@ class logmein {
 				//create password hasher object with the same parameters that were used to hash the initial pwd.
 				$pwdHasher = new PasswordHash(8, FALSE);
 				
-				//validate password against hadhed one
+				//validate password against hashed one
 				$validPassword = $pwdHasher->CheckPassword( $password , $row[$this->pass_column] );
 				
 				if($validPassword){

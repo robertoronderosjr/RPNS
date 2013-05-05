@@ -4,16 +4,7 @@
 <?php include "AJAX-PHP/header.php" ?>
 <!--Modals-->
 <?php include "AJAX-PHP/modals.html" ?>
-<!--Alert alert-success for green, alert-error for red-->
-<style>
-	#AlertWindow{
-		display:none;
-	}
-</style>
-<div id="AlertWindow" class="alert">
-        <button type="button" class="close" data-dismiss="alert">×</button>
-        <strong id="alertInfo"></strong> <p id="alertDesc"></p>
-</div>
+
 <div class="container"> <!--DO NOT CLOSE, CLOSED IN FOOTER-->
       
       <!-- Only if not logged in -->

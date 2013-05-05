@@ -20,7 +20,7 @@
 	        <div class="row"> 
 	            <div class="span7">
 	            	<div class="well">
-	                	<form id="profile" class="form-horizontal" method="post" action="AJAX-PHP/register.php">
+	                	<form id="profile" class="form-horizontal" method="post" action="AJAX-PHP/editProfile.php">
                         <legend><?php echo $_SESSION["netid"]; ?></legend>
                         <div class="control-group">
                             <label class="control-label" for="fname">First Name</label>
@@ -84,7 +84,8 @@
                             <div class="controls">
                                 <div class="input-prepend">
                                 <span class="add-on"><i class="icon-lock"></i></span>
-                                    <input type="Password" id="passwd"  name="passwd" placeholder="Password">
+                                    <input type="Password" id="passwdSeen"  name="passwd" placeholder="Password">
+                                    <input  type="hidden" id="passwd"  name="passwd" placeholder="Old Password">
                                 </div>
                             </div>
                         </div>
@@ -93,7 +94,8 @@
                             <div class="controls">
                                 <div class="input-prepend">
                                 <span class="add-on"><i class="icon-lock"></i></span>
-                                    <input type="Password" id="conpasswd"  name="conpasswd" placeholder="Re-enter Password">
+                                    <input type="Password" id="conpasswdSeen"   placeholder="Re-enter Password">
+                                    <input  type="hidden" id="conpasswd"  name="conpasswd" placeholder="Old Password">
                                 </div>
                             </div>
                         </div>         
@@ -104,7 +106,7 @@
                             </div>                
                         </div>                        
                                                
-                        <input type="hidden" id="genderHidden" name="genderHidden" value="">
+                        <input type="hidden" id="genderHidden" name="genderHidden" value="<?php echo $userprofileinfo["gender"]; ?>" />
                         
                     </form>
 	               </div>

@@ -14,6 +14,7 @@ $(document).ready(function() {
 	if ( typeof (classEdit) != "undefined" && classEdit !== null && classEdit != "") {
 			editing=true;
 			var courseID=classEdit;
+			
 			fillClassForm(courseID);
 			if ($('#addClass').hasClass('inactiveWindow')) {
 				$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
@@ -24,6 +25,8 @@ $(document).ready(function() {
 				$('#seeClassesBtn').addClass('active');
 				$("#addClass #submitBtn").html('Edit Class');
 				$("#addClass").find('form').attr("action","AJAX-PHP/editClass.php");
+				$("#addClass").find('form').append("<input name='CID' type='hidden' value='"+courseID+"'/>");
+				$("#addClass").find('form').append("<input name='COID' type='hidden' value='"+coid+"'/>");
 				$("#clear").remove();
 			}			
 	}
@@ -34,6 +37,13 @@ $(document).ready(function() {
 				alertWindow("Success!", "You added a new course to the System.", "alert-success");
 			}
 		}
+	/*alert class edited*/
+	if ( typeof (courseEdited) != "undefined" && courseEdited !== null && courseEdited != "") {
+			if (courseEdited) {
+				alertWindow("Success!", "You correctly edited a class.", "alert-success");
+			}
+		}
+
 
 	/*course pre-reqs auto-complete*/
 	$(".prereqsfields").autocomplete({
@@ -445,13 +455,14 @@ $(document).ready(function() {
 	
 	$('#seeClasses').on('click', "#seeEditClass", function(){	
 		var cid = $(this).attr('classID');
-		window.location.href = "http://cs336-31.rutgers.edu/index.php?classEdit="+cid;
+		var coid= $(this).attr('coid');
+		window.location.href = "http://cs336-31.rutgers.edu/index.php?classEdit="+cid+"&coid="+coid;
 	});
 	$('#addClass').on('click', "#goBackBtn", function(){			
 		$('#seeClassesBtn').click();		
 	});
 	
-
+	
 });
 
 function resetForm(){
@@ -698,8 +709,15 @@ function fillClassForm(C_ID){
 						}
 						else{
 							var row = '<input type="text" class="input prereqsfields" placeholder="Course Name" value="'+course.Requirements[i].Name+'"/>\
+											<a id="removeField" role="button" class="btn btn-mini"><i class="icon-remove-sign"></i></a>\
 											<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value="'+course.Requirements[i].C_ID+'"/><BR>';
+							
 							$("#cPreReqs").append(row);
+							$("#removeField").click(function() {
+								console.log("removing");
+								$(this).prev('input').remove();
+								$(this).remove();
+							});
 						}			   		
 			   }
 			   for(i=0;i<course.Semesters.length;i++){
@@ -708,44 +726,116 @@ function fillClassForm(C_ID){
 			   for(i=0;i<course.Sections.length;i++){
 			   		if(i==0){
 			   			$("#sectionNumbersDiv").children('input').eq(0).val(course.Sections[i].Section_Number);
+			   			$("#sectionNumbersDiv").append('<input name="CSID[]" type="hidden" value="'+course.Sections[i].CS_ID+'" />');
 			   		}
 			   		else{
 			   			$("#sectionNumbersDiv").append('<input id="sectionNumber" name="sectionNumber[]" \
-			   			class="input-medium  input" type="text" placeholder="Section Number" value="'+course.Sections[i].Section_Number+'"><br>')
+			   			class="input-medium  input" type="text" placeholder="Section Number" value="'+course.Sections[i].Section_Number+'">\
+			   			<a id="removeField2" role="button" class="btn btn-mini"><i class="icon-remove-sign"></i></a>\
+			   			<br>');
+			   			$("#removeField2").click(function() {
+								console.log("removing");
+								$(this).prev('input').remove();
+								$(this).remove();
+							});
+			   			$("#sectionNumbersDiv").append('<input name="CSID[]" type="hidden" value="'+course.Sections[i].CS_ID+'" />');
 			   		}
 			   }			   
-			   
-			   sortable2
+			   var numberOfCustomQuestions=0;			   
 			   for(i=0;i<course.Used_Criteria.length;i++){
 			   		switch(course.Used_Criteria[i].Type){
 			   			case 'requestedDate':
 			   				$("#sortable1 li[value=requestedDate]").clone().appendTo('#sortable2');
 			   				$("#sortable1 li[value=requestedDate]").remove();
+			   				$("#sortable2 li[value=requestedDate]").find('input').removeAttr('disabled');
+			   				$("#sortable2 li[value=requestedDate]").append("<input type='hidden' name='PCRIDS[]' value='"+course.Used_Criteria[i].PCRID+"' />");
 			   				break;
 			   			case 'universityYear':
 			   				$("#sortable1 li[value=universityYear]").clone().appendTo('#sortable2');
 			   				$("#sortable1 li[value=universityYear]").remove();
+			   				$("#sortable2 li[value=universityYear]").find('input').removeAttr('disabled');
+			   				$("#sortable2 li[value=universityYear]").append("<input type='hidden' name='PCRIDS[]' value='"+course.Used_Criteria[i].PCRID+"' />");
 			   				$("#yearPreferred").val(course.Used_Criteria[i].Values);
 			   				break;
 			   			case 'creditsCompleted':
 			   				$("#sortable1 li[value=creditsCompleted]").clone().appendTo('#sortable2');
 			   				$("#sortable1 li[value=creditsCompleted]").remove();
+			   				$("#sortable2 li[value=creditsCompleted]").find('input').removeAttr('disabled');
+			   				$("#sortable2 li[value=creditsCompleted]").append("<input type='hidden' name='PCRIDS[]' value='"+course.Used_Criteria[i].PCRID+"' />");
 			   				$("#preferedCredits").val(course.Used_Criteria[i].Values);
 			   				break;
 			   			case 'gradesPreReq':
 			   				$("#sortable1 li[value=gradesPreReq]").clone().appendTo('#sortable2');
 			   				$("#sortable1 li[value=gradesPreReq]").remove();
+			   				$("#sortable2 li[value=gradesPreReq]").find('input').removeAttr('disabled');
+			   				$("#sortable2 li[value=gradesPreReq]").append("<input type='hidden' name='PCRIDS[]' value='"+course.Used_Criteria[i].PCRID+"' />");
 			   				$("#preferedGradePreReqs").val(course.Used_Criteria[i].Values);
 			   				break;
 			   			case 'major':
 			   				$("#sortable1 li[value=major]").clone().appendTo('#sortable2');
 			   				$("#sortable1 li[value=major]").remove();
+			   				$("#sortable2 li[value=major]").find('input').removeAttr('disabled');
+			   				$("#sortable2 li[value=major]").append("<input type='hidden' name='PCRIDS[]' value='"+course.Used_Criteria[i].PCRID+"' />");
 			   				$("#preferedMajor").val(course.Used_Criteria[i].Values);
 			   				break;
 			   			case 'gpa':
 			   				$("#sortable1 li[value=gpa]").clone().appendTo('#sortable2');
 			   				$("#sortable1 li[value=gpa]").remove();
+			   				$("#sortable2 li[value=gpa]").find('input').removeAttr('disabled');
+			   				$("#sortable2 li[value=gpa]").append("<input type='hidden' name='PCRIDS[]' value='"+course.Used_Criteria[i].PCRID+"' />");
 			   				$("#preferedGPA").val(course.Used_Criteria[i].Values);
+			   				break;
+			   			case 'ck':
+			   				numberOfCustomQuestions++;
+			   				
+			   				var ckQuestion = jQuery.parseJSON(course.Used_Criteria[i].Values);
+			   				
+			   				$('#sortable2').append('<li class="ui-state-default" value="'+ckQuestion[0]+'">'+ckQuestion[0]+'<input type="hidden" name="basicCriteria[]" value="'+ckQuestion[0]+'">'+
+			   										'<input type="hidden" name="PCRIDS[]" value="'+course.Used_Criteria[i].PCRID+'" />'+	
+			   										'</li>')
+			   				$("#numberOfCustomQuestions").attr('value',numberOfCustomQuestions);
+			   				$("#customCriteria").append('<input name="customQuestion_'+numberOfCustomQuestions+'" value="'+ckQuestion[0]+'">');
+			   				$("#customCriteria").append('<input name="type[]" value="ck">');
+			   				for(j=1;j<ckQuestion.length;j++){
+			   					$("#customCriteria").append('<input name="ck_'+numberOfCustomQuestions+'[]" value="'+ckQuestion[j].keyword+'">');
+			   					$("#customCriteria").append('<input name="ckimportance_'+numberOfCustomQuestions+'[]" value="'+ckQuestion[j].importance+'">');
+			   				}
+			   				
+			   				break;
+			   			case 'cb':
+			   				numberOfCustomQuestions++;
+			   				
+			   				var cbQuestion = jQuery.parseJSON(course.Used_Criteria[i].Values);
+			   				
+			   				$('#sortable2').append('<li class="ui-state-default" value="'+cbQuestion[0]+'">'+cbQuestion[0]+'<input type="hidden" name="basicCriteria[]" value="'+cbQuestion[0]+'">'+
+			   										'<input type="hidden" name="PCRIDS[]" value="'+course.Used_Criteria[i].PCRID+'" />'+	
+			   										'</li>');
+			   				$("#numberOfCustomQuestions").attr('value',numberOfCustomQuestions);
+			   				$("#customCriteria").append('<input name="customQuestion_'+numberOfCustomQuestions+'" value="'+cbQuestion[0]+'">');
+			   				$("#customCriteria").append('<input name="type[]" value="cb">');
+			   				for(j=1;j<cbQuestion.length;j++){
+			   					$("#customCriteria").append('<input name="cb_'+numberOfCustomQuestions+'[]" value="'+cbQuestion[j].checkbox+'">');
+			   					$("#customCriteria").append('<input name="cbimportance_'+numberOfCustomQuestions+'[]" value="'+cbQuestion[j].importance+'">');
+			   				}
+			   				
+			   				break;
+			   			case 'rb':
+			   				numberOfCustomQuestions++;
+			   				
+			   				var rbQuestion = jQuery.parseJSON(course.Used_Criteria[i].Values);
+			   				
+			   				$('#sortable2').append('<li class="ui-state-default" value="'+rbQuestion[0]+'">'+rbQuestion[0]+'<input type="hidden" name="basicCriteria[]" value="'+rbQuestion[0]+'">'+
+			   										'<input type="hidden" name="PCRIDS[]" value="'+course.Used_Criteria[i].PCRID+'" />'+	
+			   										'</li>')
+			   				
+			   				$("#numberOfCustomQuestions").attr('value',numberOfCustomQuestions);
+			   				$("#customCriteria").append('<input name="customQuestion_'+numberOfCustomQuestions+'" value="'+rbQuestion[0]+'">');
+			   				$("#customCriteria").append('<input name="type[]" value="rb">');
+			   				for(j=1;j<rbQuestion.length;j++){
+			   					$("#customCriteria").append('<input name="rb_'+numberOfCustomQuestions+'[]" value="'+rbQuestion[j].radio+'">');
+			   					$("#customCriteria").append('<input name="rbimportance_'+numberOfCustomQuestions+'[]" value="'+rbQuestion[j].importance+'">');
+			   				}
+			   				
 			   				break;
 			   			
 			   		}

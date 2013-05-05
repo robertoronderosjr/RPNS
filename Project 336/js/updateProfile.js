@@ -3,9 +3,26 @@
  */
 $(document).ready(function() {
 	
+	/*alert class added*/
+	if ( typeof (profileEdited) != "undefined" && profileEdited !== null && profileEdited != "") {
+			if (profileEdited) {
+				alertWindow("Success!", "You edited your profile correctly.", "alert-success");
+			}
+		}
+	
 	$("#oldpassSeen").change(function() {
 		$("#oldpass").val($(this).val());
 		$("#profile").validate().element("#oldpass");
+	});
+	
+	$("#passwdSeen").change(function() {
+		$("#passwd").val($(this).val());
+		$("#profile").validate().element("#passwd");
+	});
+	
+	$("#conpasswdSeen").change(function() {
+		$("#conpasswd").val($(this).val());
+		$("#profile").validate().element("#conpasswd");
 	});
 	
 	
@@ -143,10 +160,27 @@ $(document).ready(function() {
 		$('#datetimepicker').datetimepicker('show');
 	});
 
-
-
-
-
-	
 	
 });
+
+function alertWindow(alertInfo, alertDesc, type) {
+	$("#AlertWindow #alertInfo").html(alertInfo);
+	$("#AlertWindow #alertDesc").html(alertDesc);
+	if (type == 'alert-error') {
+		if ($("#AlertWindow").hasClass('alert-success')) {
+			$("#AlertWindow").removeClass('alert-success').addClass('alert-error');
+		} else {
+			$("#AlertWindow").addClass('alert-error');
+		}
+	} else {
+		if ($("#AlertWindow").hasClass('alert-error')) {
+			$("#AlertWindow").removeClass('alert-error').addClass('alert-success');
+		} else {
+			$("#AlertWindow").addClass('alert-success');
+		}
+	}
+	$("#AlertWindow").fadeIn('slow');
+	window.setTimeout(function() {
+		$("#AlertWindow").slideUp();
+	}, 5000);
+}
