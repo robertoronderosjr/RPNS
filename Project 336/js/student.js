@@ -1,5 +1,21 @@
 $(document).ready(function() {
 	
+	/*alert request done*/
+	if ( typeof (requestDone) != "undefined" && requestDone !== null && requestDone != "") {
+			if (requestDone) {
+				alertWindow("Success!", "You have succesfully requested a permission number.", "alert-success");
+			}
+		}
+	
+	/*alert request done*/
+	
+	if ( typeof (noSPNS) != "undefined" && noSPNS !== null && noSPNS != "") {
+			
+			if (noSPNS) {
+				alertWindow("Error!", "There are no permission numbers available for this section.", "alert-error");
+			}
+		}
+	
 	loadDepartments();
 	/*Select handlers*/
 	$("#departments").change(function() {
@@ -50,6 +66,24 @@ $(document).ready(function() {
 		}
 	});	
 	
+	$(".cancelRequestBtn").click(function(){
+		var prid = $(this).attr("prid");
+		console.log(prid);
+		$.ajax({
+			url : "AJAX-PHP/deleteRequest.php",
+			data: { PR_ID: prid },
+			async:false
+		}).done(function(data) {
+			console.log(data);		
+			if(data="success"){				
+				alertWindow("Success!", "Your Request was deleted from the system.", "alert-success");
+			}
+			else{
+				alertWindow("Error!", "Your Request couldn't be handled.", "alert-error");
+			}
+		});
+		$(this).closest('.accordion-group').remove();
+	});
 	
 })
 

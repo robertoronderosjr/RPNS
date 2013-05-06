@@ -199,7 +199,7 @@ $(document).ready(function() {
 			      	$(this).next().next().attr('value',val);
 			    }
 		      }
-	    });
+	    });//make all jquery ids have click function
 	});
 
 	$("#addMajorBtn").click(function() {
@@ -218,6 +218,11 @@ $(document).ready(function() {
 		$("#addMajorModal").modal("hide");
 	});
 
+	$("#accordionPracticeCats").delegate("#spnsbtn", "click", function() {
+
+		console.log( $(this).attr('coid'));
+		loadSections($(this).attr('coid'));
+	});
 	$("#addDepartmentBtnModal").click(function() {
 		var U_ID = $('#universitiesM').find(":selected").val();
 		var name = $('#departmentName').val();
@@ -611,7 +616,23 @@ function loadDepartments() {
 
 	});
 }
+function loadSections(COID) {
+	//console.log("Loading.."+COID);
+	$('#dsection').empty();
+		//console.log("Dave");
+	$.get("../AJAX-PHP/loadSections.php", {
+	CO_ID : COID
+	}).done(function(data) {
+		//console.log(data);
+		var sections=jQuery.parseJSON(data);
+		$('#dsection').append('<option>Select Section</option>');
+		for(i=0;i<sections.length;i++){
+			$('#dsection').append('<option value="' + sections[i].csid + '">Section: ' + sections[i].csid + '</option>');
+		}
+		
 
+	});
+}
 function loadMajors(selector) {
 	$(selector).empty();
 	$(selector).append('<option >Select A Major</option>');

@@ -94,7 +94,7 @@ foreach($sectionNumber as $sectionN){
 	$sql = "INSERT INTO Course_Section (CO_ID,Section_Number,Teached_By) VALUES ('".$CO_ID."', '".$sectionN."','".$managedBy."')";
 	// Execute our query
 	if (!$mysql -> Query($sql)) {
-		echo "failed adding Course Section: ".$mysql->Error();
+		echo "failed adding Course Section: ".$mysql->Error()." ".$sql;
 		$mysql -> Kill();
 		exit(1);
 	} 
@@ -512,7 +512,7 @@ if(sizeof($customQuestions)>0){
 
 }*/
 
-//header('Location: http://cs336-31.rutgers.edu/index.php?alert=courseEdited');
+header('Location: http://cs336-31.rutgers.edu/index.php?alert=courseEdited');
   
     
 	

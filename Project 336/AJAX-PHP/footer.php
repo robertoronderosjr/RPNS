@@ -26,6 +26,8 @@
     <?php if(isset($_SESSION['type']) && $_SESSION['type']==2){ ?>
     <script type="text/javascript" src="js/professor.js"></script>
     <script type="text/javascript" src="js/addSPNS.js"></script>
+    <script type="text/javascript" src="js/jquery.fineuploader-3.5.0.min.js"></script>
+    <script type="text/javascript" src="js/iframe.xss.response-3.5.0.js"></script>
     <?php } else if(isset($_SESSION['type'])&& $_SESSION['type']==1){ ?>
     <script type="text/javascript" src="js/student.js"></script>
     <?php } ?>
@@ -48,6 +50,14 @@ if(isset($_GET['alert'])){
 	else if($_GET['alert']=='profileEdited'){
 		echo "<script>var profileEdited=true;</script>";
 	}
+	else if($_GET['alert']=='requestDone'){
+		echo "<script>var requestDone=true;</script>";
+	}
+	else if($_GET['alert']=='noSPNS'){
+		echo "<script>var noSPNS=true;</script>";
+	}
+	
+	
 }
 else if(isset($_GET['classEdit'])){	
 	echo "<script>var classEdit='".$_GET['classEdit']."';</script>";

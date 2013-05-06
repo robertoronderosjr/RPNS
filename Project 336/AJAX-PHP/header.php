@@ -46,6 +46,9 @@ function echoActiveClassIfRequestMatches($requestUri)
     <!--Css Style for date picker-->
     <link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
     
+    <!--CSS for uploader-->
+    <link href="css/fineuploader-3.5.0.css" rel="stylesheet">
+    
     <!--General Css styles for this page-->
     <style>
 		.alert{			

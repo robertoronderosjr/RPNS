@@ -120,10 +120,29 @@
 		<h3 id="caddSPNSModalLabel">Add Special Permission Numbers</h3>
 	</div>
 	<div class="modal-body">
-		<!--modal content here-->
+		<div class="control-group">
+			<label class="control-label" for="dsection"><b>Sections</b></label>
+			<br>
+			<div class="controls">
+				<select id="dsection" name="dsection" >
+					<option value="0">Select a Section</option>
+				</select>
+			</div>
+			<div class="btn-group" data-toggle-name="is_private" id="spnsradiobtns" data-toggle="buttons-radio" >
+				<button type="button" value="0" class="btn active" id="spnsradio" data-toggle="button">Manual</button>
+			  	<button type="button" value="1" class="btn" id="spnsradio" data-toggle="button">File</button>
+			</div>
+			
+			<div id="manualModal" style="display: none;">
+				<br/><input id="spnmanual" class="input-medium" type="text" placeholder="Special Permission Number">
+			</div>
+			<div id="fileModal" style="display: none;">
+				<br/><div id='jquery-wrapped-fine-uploader'></div>
+			</div>
+		</div>
 	</div>
 	<div class="modal-footer">
-		<button id=""  class="btn btn-primary">
+		<button id="spnsmodalbtn"  class="btn btn-primary">
 			Add SPNS &raquo;
 		</button>
 	</div>

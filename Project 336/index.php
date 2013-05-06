@@ -163,7 +163,7 @@
 	            </div>
 	            <div id="seeRequested" class="inactiveWindow"> 	  
 	              <h2>See Requested Permission Numbers</h2>
-	               <?php include "AJAX-PHP/seeRequested.php";?>         
+	               <?php include "AJAX-PHP/seeRequestedClasses.php";?>         
 	            </div>	  					
 	  	    <?php }?>	
        </div>        

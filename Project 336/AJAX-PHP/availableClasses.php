@@ -1,4 +1,5 @@
 <?php
+session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 /**
@@ -10,6 +11,8 @@ echo "<script>";
 include_once("../js/request.js");
 echo "</script>";
 
+$netid = $_SESSION['netid'];
+$atLeastOne=false;	
 $query = "SELECT c.`C_ID`, c.`Name`, cr.`CO_ID`
 		  FROM Course as c, Course_Offering as cr, Majors as m
 		  WHERE c.`C_ID`=cr.`C_ID` 
@@ -28,7 +31,27 @@ $num_rows = mysql_num_rows($result);
 if($num_rows >0){
 	echo '<h4>Results:</h4><div class="accordion" id="accordionPracticeCats">';
 	while ($row = mysql_fetch_array($result)) {	
-				
+		/*check if selected class has available sections for the user*/
+		$query= "SELECT cs.CS_ID,cs.Section_Number 
+				 FROM Course_Section as cs
+				 WHERE cs.CO_ID='".$row['CO_ID']."' AND cs.CS_ID NOT IN 
+				 (SELECT C_ID
+				  FROM `Student_P#_Request` as s
+				  WHERE s.U_ID='".$netid."')
+			 	  AND cs.CS_ID IN
+							 (SELECT CS_ID
+							  FROM Permissions
+							  WHERE CS_ID=cs.CS_ID AND Available='y'
+					 		  )";
+		if (!$mysql -> Query($query)) {
+			echo "Failed retrieving sections: ".$mysql->Error();
+			$mysql -> Kill();
+			exit(1);
+		}
+		$result2 = $mysql ->Records();
+		$num_rows = mysql_num_rows($result2);
+		if($num_rows >0){
+			$atLeastOne=true;		
 		/*go thorugh the categories the user wants and check if there's a practice for that category if so display it*/
 		echo '<div class="accordion-group">';
 			echo '<div class="accordion-heading" > <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPracticeCats" href="#collapse'.$row['C_ID'].'">
@@ -36,17 +59,10 @@ if($num_rows >0){
 				  </a></div>';
 			echo '<div id="collapse'.$row['C_ID'].'" class="accordion-body collapse">';
 				echo '<div class="accordion-inner"> ';			
-					echo "<form id='".$row['C_ID']."' method='post'>
+					echo "<form action='AJAX-PHP/requestSPN.php' id='".$row['C_ID']."' method='post'>
 						  	<h5>Please fill out the following form</h5>						    	
 						  	<label for='sections'>Choose a Section</label>
-						  	<select id='sections'>";
-							$query= "SELECT CS_ID,Section_Number FROM Course_Section WHERE CO_ID='".$row['CO_ID']."'";
-							if (!$mysql -> Query($query)) {
-									echo "Failed retrieving sections: ".$mysql->Error();
-									$mysql -> Kill();
-									exit(1);
-							}
-							$result2 = $mysql ->Records();
+						  	<select id='sections'>";							
 							while ($row2 = mysql_fetch_array($result2)) {
 									echo "<option value=".$row2['CS_ID'].">".$row2['Section_Number']."</option>";
 							}							
@@ -102,12 +118,16 @@ if($num_rows >0){
 						   				echo "<label class='control-label'  for='currentGPA'><b>Please input your current GPA</b></label>
 						   					 <input type='text' id='currentGPA' name='currentGPA' placeholder='G.P.A.'/><br/>";
 						   				break;
+									case 'major':
+						   				echo "<label class='control-label'  for='major'><b>Please input your major</b></label>
+						   					 <input type='text' id='major' name='major' placeholder='Major'/><br/>";
+						   				break;
 									case 'ck':
 										$customQuestionCounter++;										
 										$jsonForm = json_decode($row3['Values'],true);
 										$question = $jsonForm[0];
 										echo "<label class='control-label' for='ck".$customQuestionCounter."'><b>".$question."</b></label>";
-										echo "<input id='ck".$customQuestionCounter."' name='ck".$customQuestionCounter."[]' placeholder='Type your answer here'/><br/><br/>";
+										echo "<input type='text' id='ck".$customQuestionCounter."' name='ck".$customQuestionCounter."' placeholder='Type your answer here'/><br/><br/>";
 										
 										break;
 									case 'cb':
@@ -118,7 +138,7 @@ if($num_rows >0){
 										echo "<div class='controls'>";
 										for($j=1;$j<sizeof($jsonForm);$j++){
 											$checkBox = $jsonForm[$j];																						
-											echo"<input type='checkbox' name='cb".$customQuestionCounter."[]' value='".$checkBox['importance']."'>".$checkBox['checkbox']."<br>";
+											echo"<input type='checkbox' name='cb".$customQuestionCounter."[]' value='".$checkBox['checkbox']."'>".$checkBox['checkbox']."<br>";
 										}
 										echo "</div><br/>";	
 										
@@ -131,7 +151,7 @@ if($num_rows >0){
 										echo "<div class='controls'>";
 										for($j=1;$j<sizeof($jsonForm);$j++){
 											$radio = $jsonForm[$j];																						
-											echo"<input type='radio' name='rb".$customQuestionCounter."[]' value='".$radio['importance']."'>".$radio['radio']."<br>";
+											echo"<input type='radio' name='rb".$customQuestionCounter."' value='".$radio['radio']."'>".$radio['radio']."<br>";
 										}
 										echo "</div><br/>";	
 										
@@ -139,16 +159,20 @@ if($num_rows >0){
 								}	
 							}
 							
-							echo "<br/><button id='requestSPN' class='btn btn-success pull-right'>Request SPN</button><br/><br/>
-							<input name='C_ID' value='".$row['C_ID']."' />
-							<input name='CO_ID' value='' />
+							
+							echo "<input type='hidden' name='C_ID' value='".$row['C_ID']."' />
+							<input id='csid' type='hidden' name='CS_ID' value='' />
 							</form>";
+							echo "<br/><button class='btn btn-success pull-right requestSPN' formid='".$row['C_ID']."'>Request SPN</button><br/><br/>";
 				echo '</div>';//close accordion-inner
 			echo '</div>';//close collapseGroup
 		echo '</div>';//close accordion group
-			
+		}	
 		
 		
+	}//close while
+	if($atLeastOne==false){
+		echo "<h4><i class='icon-exclamation-sign'></i> There are no available classes for your query.</h4>";		
 	}
 	echo '</div>'; //close accordion
 		
