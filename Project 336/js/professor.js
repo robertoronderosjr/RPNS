@@ -8,8 +8,9 @@ var customQuestionCounter=0;
 var selectedCustomCriteria="0";
 var selectedPreReq;
 var editing;
+var courseSectionEditing=false;
 $(document).ready(function() {
-	
+	courseSectionEditing=false;
 	/*read url parameter to see if we need to edit a class*/	
 	if ( typeof (classEdit) != "undefined" && classEdit !== null && classEdit != "") {
 			editing=true;
@@ -26,7 +27,7 @@ $(document).ready(function() {
 				$("#addClass #submitBtn").html('Edit Class');
 				$("#addClass").find('form').attr("action","AJAX-PHP/editClass.php");
 				$("#addClass").find('form').append("<input name='CID' type='hidden' value='"+courseID+"'/>");
-				$("#addClass").find('form').append("<input name='COID' type='hidden' value='"+coid+"'/>");
+				$("#addClass").find('form').append("<input name='COID' id='COID' type='hidden' value='"+coid+"'/>");
 				$("#clear").remove();
 			}			
 	}
@@ -230,29 +231,63 @@ $(document).ready(function() {
 	});
 
 	$("#addSection").click(function() {
+		console.log("COURSE SECTION EDITING:"+courseSectionEditing);
+		if(!courseSectionEditing){
+		
 		var rowSectionNumber = '<input id="sectionNumber" name="sectionNumber[]" class="input-medium  input" type="text" placeholder="Section Number" required><BR>';
 		
 		$("#sectionNumbersDiv").append(rowSectionNumber);
+		}
+		else{
+			var modalTitle = $("#criteriaModalLabel");
+			var modalBodyContent = $("#criteriaModal .modal-body");
+			var bodyContent;
+					
+			bodyContent = '<div class="control-group">' + 
+			'<label class="control-label" for="sectionNM"><b>Section Number:</b></label>' +
+			 '<br/>' + 
+			 '<div class="controls">' + 
+			 '<input type="text" id="sectionNM" name="sectionNM" class="sectionNM" placeholder="Section #">' +
+			 '</div>';
+			
+			
+			modalTitle.html('Add a Section');
+			modalBodyContent.html(bodyContent);
+			$("#criteriaModalOKBtn").attr('sectionNM','none');
+			
+			$("#sectionNM").change(function(){				
+				$("#criteriaModalOKBtn").attr('sectionNM',$(this).val());
+			})
+			$("#criteriaModal").modal("show");
+		}
 	});
 
 	$("#criteriaModalOKBtn").click(function() {
-		
-		var valueReceivedItem = receivedItem.attr('value');
-		if ( typeof (valueReceivedItem) != "undefined" && valueReceivedItem !== null && valueReceivedItem != "") {
-			if (valueReceivedItem == 'universityYear') {
-				$("#yearPreferred").attr('value', $('input[name="preferedYearModal"]:checked').val());
-
-			} else if (valueReceivedItem == 'creditsCompleted') {
-				$("#preferedCredits").attr('value', $('#numberCreditsModal').val());
-			} else if (valueReceivedItem == 'gradesPreReq') {
-				$("#preferedGradePreReqs").attr('value', $('input[name="preferedGradeModal"]:checked').val());
-			} else if (valueReceivedItem == 'gpa') {
-				$("#preferedGPA").attr('value', $('#gpaModal').val());
-			} else if (valueReceivedItem == 'major') {
-				$("#preferedMajor").attr('value', $('#cMajorModal').find(":selected").val());
+		if(!courseSectionEditing){
+			var valueReceivedItem = receivedItem.attr('value');
+			if ( typeof (valueReceivedItem) != "undefined" && valueReceivedItem !== null && valueReceivedItem != "") {
+				if (valueReceivedItem == 'universityYear') {
+					$("#yearPreferred").attr('value', $('input[name="preferedYearModal"]:checked').val());
+	
+				} else if (valueReceivedItem == 'creditsCompleted') {
+					$("#preferedCredits").attr('value', $('#numberCreditsModal').val());
+				} else if (valueReceivedItem == 'gradesPreReq') {
+					$("#preferedGradePreReqs").attr('value', $('input[name="preferedGradeModal"]:checked').val());
+				} else if (valueReceivedItem == 'gpa') {
+					$("#preferedGPA").attr('value', $('#gpaModal').val());
+				} else if (valueReceivedItem == 'major') {
+					$("#preferedMajor").attr('value', $('#cMajorModal').find(":selected").val());
+				}
+	
+				$("#criteriaModal").modal("hide");
 			}
-
-			$("#criteriaModal").modal("hide");
+		}
+		else{
+			var Section_Number= $(this).attr('sectionNM');
+			var CO_ID = $("#COID").attr('value');
+			console.log(Section_Number,CO_ID);
+			addSection(Section_Number,CO_ID);
+			courseSectionEditing=false;
 		}
 
 	});
@@ -690,6 +725,38 @@ function addDepartment(U_ID, name) {
 
 }
 
+function addSection(Section_Number,CO_ID){
+	$.get("AJAX-PHP/addSection.php", {
+		Section_Number : Section_Number,
+		CO_ID : CO_ID
+	}).done(function(data) {
+		console.log(data);
+		if (data != "success") {			
+			alertWindow("Error", "There was an error trying to add the new section. Please contact the Web-Developer.", "alert-error");
+		} else {
+			
+			alertWindow("Success!", "You added new section to the System.", "alert-success");
+			 location.reload();
+		}
+
+	});
+}
+
+function removeSection(CS_ID){
+	$.get("AJAX-PHP/removeSection.php", {
+		CS_ID : CS_ID
+	}).done(function(data) {
+		console.log(data);
+		if (data != "success") {			
+			alertWindow("Error", "There was an error trying to remove this section. Please contact the Web-Developer.", "alert-error");
+		} else {			
+			alertWindow("Success!", "You added new section to the System.", "alert-success");
+			location.reload();
+		}
+
+	});
+}
+
 function alertWindow(alertInfo, alertDesc, type) {
 	$("#AlertWindow #alertInfo").html(alertInfo);
 	$("#AlertWindow #alertDesc").html(alertDesc);
@@ -730,11 +797,11 @@ function fillClassForm(C_ID){
 						}
 						else{
 							var row = '<input type="text" class="input prereqsfields" placeholder="Course Name" value="'+course.Requirements[i].Name+'"/>\
-											<a id="removeField" role="button" class="btn btn-mini"><i class="icon-remove-sign"></i></a>\
+											<a id="removeField" role="button" class="btn btn-mini removeField"><i class="icon-remove-sign"></i></a>\
 											<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value="'+course.Requirements[i].C_ID+'"/><BR>';
 							
 							$("#cPreReqs").append(row);
-							$("#removeField").click(function() {
+							$(".removeField").click(function() {
 								console.log("removing");
 								$(this).prev('input').remove();
 								$(this).remove();
@@ -744,20 +811,22 @@ function fillClassForm(C_ID){
 			   for(i=0;i<course.Semesters.length;i++){
 			   		     $("#semestersAvailable input[value='"+course.Semesters[i]+"']").attr('checked','checked');
 			   }
+			   courseSectionEditing=true;
 			   for(i=0;i<course.Sections.length;i++){
 			   		if(i==0){
 			   			$("#sectionNumbersDiv").children('input').eq(0).val(course.Sections[i].Section_Number);
+			   			$("#sectionNumbersDiv").children('input').eq(0).after(' <a id="removeField2" role="button" class="btn btn-mini removeField2"><i class="icon-remove-sign"></i></a>');
 			   			$("#sectionNumbersDiv").append('<input name="CSID[]" type="hidden" value="'+course.Sections[i].CS_ID+'" />');
 			   		}
 			   		else{
 			   			$("#sectionNumbersDiv").append('<input id="sectionNumber" name="sectionNumber[]" \
 			   			class="input-medium  input" type="text" placeholder="Section Number" value="'+course.Sections[i].Section_Number+'">\
-			   			<a id="removeField2" role="button" class="btn btn-mini"><i class="icon-remove-sign"></i></a>\
+			   			<a id="removeField2" role="button" class="btn btn-mini removeField2"><i class="icon-remove-sign"></i></a>\
 			   			<br>');
-			   			$("#removeField2").click(function() {
+			   			$(".removeField2").click(function() {
 								console.log("removing");
-								$(this).prev('input').remove();
-								$(this).remove();
+								var CSID= $(this).next().next().val();								
+								removeSection(CSID);
 							});
 			   			$("#sectionNumbersDiv").append('<input name="CSID[]" type="hidden" value="'+course.Sections[i].CS_ID+'" />');
 			   		}

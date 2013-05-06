@@ -30,6 +30,7 @@
     <script type="text/javascript" src="js/iframe.xss.response-3.5.0.js"></script>
     <?php } else if(isset($_SESSION['type'])&& $_SESSION['type']==1){ ?>
     <script type="text/javascript" src="js/student.js"></script>
+    <script type="text/javascript" src="js/request.js"></script>
     <?php } ?>
 </body>
 </html>

@@ -63,57 +63,6 @@ if (!$mysql -> Query($sql)) {
 	exit(1);
 } 
 
-
-/*Add Course Sections information, using table Course_Section and tuples: CO_ID,Section_Number,Teached_By
-$sectionNumber=$_POST['sectionNumber'];//array
-GET CS_ID which is an array stored as CSID
-$CSIDS=$_POST['CSID'];//array (parallel array to section Number)
-echo "Course Section Numbers: ";
-print_r($sectionNumber);
-echo "</br>";
-echo "Course Section CSIDS: ";
-print_r($CSIDS);
-echo "</br>";
-$z=0;*/
-
-/*Add Course Sections information, using table Course_Section and tuples: CO_ID,Section_Number,Teached_By*/
-$sectionNumber=$_POST['sectionNumber'];//array
-echo "Course Section Numbers: ";
-print_r($sectionNumber);
-echo "</br>";
-echo "Deleting prev sections. <br/>";
-$sql = "DELETE FROM Course_Section
-		WHERE CO_ID='".$CO_ID."'"; 
-// Execute our query
-if (!$mysql -> Query($sql)) {
-	echo "failed deleting prev sections: ".$mysql->Error();
-	$mysql -> Kill();
-	exit(1);
-} 
-foreach($sectionNumber as $sectionN){
-	$sql = "INSERT INTO Course_Section (CO_ID,Section_Number,Teached_By) VALUES ('".$CO_ID."', '".$sectionN."','".$managedBy."')";
-	// Execute our query
-	if (!$mysql -> Query($sql)) {
-		echo "failed adding Course Section: ".$mysql->Error()." ".$sql;
-		$mysql -> Kill();
-		exit(1);
-	} 
-	
-}
-/*foreach($sectionNumber as $sectionN){
-	$sql = "UPDATE Course_Section
-			SET CO_ID='".$CO_ID."',Section_Number='".$sectionN."',Teached_By='".$managedBy."'
-			WHERE CS_ID='".$CSIDS[$z]."'
-			";
-	// Execute our query
-	if (!$mysql -> Query($sql)) {
-		echo "failed updating Course Section: ".$mysql->Error();
-		$mysql -> Kill();
-		exit(1);
-	} 
-	$z++;	
-}*/
-
 /*UPDATE course Pre-Reqs using table Course_Requirements and tuples: Requirer_ID,Requirement_ID (class id that requires and class id that is required)*/
 /*Since there's not way to get unique row, need to delete all Requirer_ID=C_ID and then add them back again.*/
 
