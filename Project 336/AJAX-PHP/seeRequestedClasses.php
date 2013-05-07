@@ -2,12 +2,12 @@
 /**
  * @author Roberto Ronderos Botero
  */
-require ("dbConnection.php");
+require_once ("dbConnection.php");
 
 
 $query = "SELECT s.PR_ID, c.C_ID, c.Name, cs.CS_ID, cs.Section_Number, s.Date, s.Status
           FROM Course as c, Course_Section as cs, `Student_P#_Request` as s
-          WHERE s.CourseID=c.C_ID AND s.C_ID=cs.CS_ID AND s.U_ID='".$_SESSION['netid']."'";
+          WHERE s.CourseID=c.C_ID AND s.C_ID=cs.CS_ID AND s.U_ID='".$_SESSION['netid']."' AND s.Active='y'";
 
 if (!$mysql -> Query($query)) {
 	echo "Failed retrieving requested permissions: ".$mysql->Error();
@@ -51,7 +51,7 @@ if($mysql->RowCount()>0){
 }
 else{
 	//no courses
-	echo "<h4><i class='icon-exclamation-sign'></i> You Have not created any classes yet!</h4>";	
+	echo "<h4><i class='icon-exclamation-sign'></i> You Have not requested SPNS for any classes yet!</h4>";	
 }
 
 ?>

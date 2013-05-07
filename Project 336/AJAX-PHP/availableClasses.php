@@ -37,7 +37,7 @@ if($num_rows >0){
 				 WHERE cs.CO_ID='".$row['CO_ID']."' AND cs.CS_ID NOT IN 
 				 (SELECT C_ID
 				  FROM `Student_P#_Request` as s
-				  WHERE s.U_ID='".$netid."')
+				  WHERE s.U_ID='".$netid."' AND s.Active='y')
 			 	  AND cs.CS_ID IN
 							 (SELECT CS_ID
 							  FROM Permissions

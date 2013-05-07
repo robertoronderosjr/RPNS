@@ -167,9 +167,25 @@ if($mysql->RowCount()>0){
 	echo "<br/>";
 	echo "Student's Final Score: ".$studenScore;
 	
-	/*Proceed to add student to Student_P#_Request*/
-	$sql = "INSERT INTO `Student_P#_Request` (U_ID,CourseID,C_ID,Score,Date,Status) 
-		    VALUES ('".$netid."','".$C_ID."','".$CS_ID."','".$studenScore."','".$date."','Pending')";
+	/*check if student had previously requested a permission number for this class*/
+	$sql = "SELECT * FROM `Student_P#_Request` WHERE U_ID='".$_SESSION['netid']."' AND C_ID='".$CS_ID."'";
+	// Execute our query
+	if (!$mysql -> Query($sql)) {
+		echo "Failed selecting prev requested section: ".$mysql->Error();
+		$mysql -> Kill();
+		exit(1);
+	}
+	if($mysql->RowCount()>0){//the student had indeed requested a SPN before
+		//*Proceed to update student in Student_P#_Request*/
+		$sql = "UPDATE `Student_P#_Request` 
+			    SET Active='y' 
+			    WHERE U_ID='".$_SESSION['netid']."' AND C_ID='".$CS_ID."'";
+	}
+	else{			 
+		//*Proceed to add student to Student_P#_Request*/
+		$sql = "INSERT INTO `Student_P#_Request` (U_ID,CourseID,C_ID,Score,Date,Status,Active) 
+			    VALUES ('".$netid."','".$C_ID."','".$CS_ID."','".$studenScore."','".$date."','Pending','y')";
+	}
 	// Execute our query
 	if (!$mysql -> Query($sql)) {
 		echo "Failed requesting permission number: ".$mysql->Error();
@@ -177,7 +193,8 @@ if($mysql->RowCount()>0){
 		exit(1);
 	}
 	echo "<br/>Student Request Succesful";
-	header('Location: http://cs336-31.rutgers.edu/index.php?alert=requestDone');	
+	header('Location: http://cs336-31.rutgers.edu/index.php?alert=requestDone');
+	include("emailStudentProfessorRequest.php");	
 	
 }
 else{

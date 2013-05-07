@@ -9,27 +9,18 @@ var selectedCustomCriteria="0";
 var selectedPreReq;
 var editing;
 var courseSectionEditing=false;
+var coid;
 $(document).ready(function() {
+	
 	courseSectionEditing=false;
+	console.log(courseSectionEditing);
 	/*read url parameter to see if we need to edit a class*/	
 	if ( typeof (classEdit) != "undefined" && classEdit !== null && classEdit != "") {
+			
 			editing=true;
 			var courseID=classEdit;
+			editableClass(courseID);
 			
-			fillClassForm(courseID);
-			if ($('#addClass').hasClass('inactiveWindow')) {
-				$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
-				$('#addClass').removeClass('inactiveWindow').addClass('activeWindow');
-				$("#addClass").prepend('<button id="goBackBtn" class="btn btn-success pull-right">Go Back</button>');
-				$('#addClass').children('h2').eq(0).html('See/Edit Class');				
-				$('#navigationBarLeft .active').removeClass('active');
-				$('#seeClassesBtn').addClass('active');
-				$("#addClass #submitBtn").html('Edit Class');
-				$("#addClass").find('form').attr("action","AJAX-PHP/editClass.php");
-				$("#addClass").find('form').append("<input name='CID' type='hidden' value='"+courseID+"'/>");
-				$("#addClass").find('form').append("<input name='COID' id='COID' type='hidden' value='"+coid+"'/>");
-				$("#clear").remove();
-			}			
 	}
 	
 	/*alert class added*/
@@ -88,6 +79,7 @@ $(document).ready(function() {
 	});
 
 	$(".sortable.ordered").on("sortreceive", function(event, ui) {
+		courseSectionEditing=false
 		receivedItem = $(ui.item);
 		var modalTitle = $("#criteriaModalLabel");
 		var modalBodyContent = $("#criteriaModal .modal-body");
@@ -263,6 +255,7 @@ $(document).ready(function() {
 	});
 
 	$("#criteriaModalOKBtn").click(function() {
+		console.log(courseSectionEditing);
 		if(!courseSectionEditing){
 			var valueReceivedItem = receivedItem.attr('value');
 			if ( typeof (valueReceivedItem) != "undefined" && valueReceivedItem !== null && valueReceivedItem != "") {
@@ -288,6 +281,7 @@ $(document).ready(function() {
 			console.log(Section_Number,CO_ID);
 			addSection(Section_Number,CO_ID);
 			courseSectionEditing=false;
+			console.log(courseSectionEditing);
 		}
 
 	});
@@ -498,12 +492,54 @@ $(document).ready(function() {
 		var coid= $(this).attr('coid');
 		window.location.href = "http://cs336-31.rutgers.edu/index.php?classEdit="+cid+"&coid="+coid;
 	});
+	
+	$('#seeClasses').on('click', ".showCancelled", function(){	
+		console.log('show cancelled');
+		$(this).next().next().next().toggle();
+	});
 	$('#addClass').on('click', "#goBackBtn", function(){			
 		$('#seeClassesBtn').click();		
 	});
 	
+	$('#seeClasses').on('click', ".assignPermission", function(){			
+		$("#assignDenyModal").modal("show");
+	});
+	
+	$('#seeClasses').on('click', ".denyPermission", function(){	
+		$("#assignDenyModal").modal("show");		
+	});
+	
 	
 });
+
+function editableClass(C_ID){
+	$.get("AJAX-PHP/classEditable.php", {
+					C_ID : C_ID,
+					async:false
+				}).done(function(data) {
+					console.log("data:"+data);
+					if (data != "editable") {			
+						$("#addClass").data("editable", 'false');
+						
+					} else {
+						$("#addClass").data("editable", 'true');			
+						
+					}
+					fillClassForm(C_ID);
+					if ($('#addClass').hasClass('inactiveWindow')) {
+						$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
+						$('#addClass').removeClass('inactiveWindow').addClass('activeWindow');						
+						$('#navigationBarLeft .active').removeClass('active');
+						$('#seeClassesBtn').addClass('active');
+						$("#addClass #submitBtn").html('Edit Class');
+						$("#addClass").find('form').attr("action","AJAX-PHP/editClass.php");
+						$("#addClass").find('form').append("<input name='CID' type='hidden' value='"+C_ID+"'/>");
+						$("#addClass").find('form').append("<input name='COID' id='COID' type='hidden' value='"+coid+"'/>");
+						$("#clear").remove();
+					}			
+			
+				});
+}
 
 function resetForm(){
 	$("#addClass").empty();
@@ -784,12 +820,35 @@ function fillClassForm(C_ID){
 		  url: "AJAX-PHP/getCourse.php",
 		  data: { C_ID: C_ID }	  
 		}).done(function( data ) {	
-			   console.log(data);
-			   			
+			   console.log(data);			   
+			   	
+			   console.log("EDITABLE:"+$("#addClass").data("editable"));
+			   
+			   if($("#addClass").data("editable")=='false'){
+					$("#addClass").prepend('<div class="alert alert-info" style="position: relative;top: -10px;"> '+
+											 ' <a class="close" data-dismiss="alert">×</a>  '+
+											 ' Students on waiting list. You can only add or remove section. Everything else is locked.<br/> '+
+											 ' WARNING: if you remove a section, all SPN from students requesting that section will be dropped.<br/> '+
+											'</div> '+
+											'<button id="goBackBtn" class="btn btn-success pull-right">Go Back</button>');
+					$('#addClass').children('h2').eq(0).html('See/Edit Class (Not editable)');	
+					$("#addClass #submitBtn").remove();
+				}
+				else{
+					$("#addClass").prepend('<button id="goBackBtn" class="btn btn-success pull-right">Go Back</button>');
+					$('#addClass').children('h2').eq(0).html('See/Edit Class');
+				}	
 			   var course = jQuery.parseJSON(data);
 			   $("#cName").val(course.Name);	
 			   $("#cMaxStudents").val(course.MAX_SIZE);			   
 			   $('#cMajor option[value='+course.Major+']').prop('selected', true);
+			   if($("#addClass").data("editable")=='false'){
+								$("#cName").attr('disabled','disabled');
+								$("#cMaxStudents").attr('disabled','disabled');
+								$('#cMajor').attr('disabled','disabled');
+								$("#addMajorBtn").remove();
+								$("#addPreReqs").remove();
+							}
 			   for(i=0;i<course.Requirements.length;i++){				   		
 						if(i==0){
 							$("#cPreReqs").children('input').eq(0).val(course.Requirements[i].Name);
@@ -800,6 +859,7 @@ function fillClassForm(C_ID){
 											<a id="removeField" role="button" class="btn btn-mini removeField"><i class="icon-remove-sign"></i></a>\
 											<input id="cPreReqs[]" name="cPreReqs[]" type="hidden" class="input" value="'+course.Requirements[i].C_ID+'"/><BR>';
 							
+							
 							$("#cPreReqs").append(row);
 							$(".removeField").click(function() {
 								console.log("removing");
@@ -808,19 +868,33 @@ function fillClassForm(C_ID){
 							});
 						}			   		
 			   }
+			    if($("#addClass").data("editable")=='false'){
+			   		     	$(".prereqsfields").attr('disabled','disabled')
+			   		     }
+			   
+			   if($("#addClass").data("editable")=='false'){
+								$(".removeField").remove();
+							}
 			   for(i=0;i<course.Semesters.length;i++){
 			   		     $("#semestersAvailable input[value='"+course.Semesters[i]+"']").attr('checked','checked');
+			   		     
 			   }
+			   if($("#addClass").data("editable")=='false'){
+			   		     	$("#semestersAvailable input").attr('disabled','disabled')
+			   		     }
 			   courseSectionEditing=true;
 			   for(i=0;i<course.Sections.length;i++){
 			   		if(i==0){
 			   			$("#sectionNumbersDiv").children('input').eq(0).val(course.Sections[i].Section_Number);
+			   			 if($("#addClass").data("editable")=='false'){
+			   		     	$("#sectionNumbersDiv").children('input').eq(0).attr('disabled','disabled')
+			   		     }
 			   			$("#sectionNumbersDiv").children('input').eq(0).after(' <a id="removeField2" role="button" class="btn btn-mini removeField2"><i class="icon-remove-sign"></i></a>');
 			   			$("#sectionNumbersDiv").append('<input name="CSID[]" type="hidden" value="'+course.Sections[i].CS_ID+'" />');
 			   		}
 			   		else{
 			   			$("#sectionNumbersDiv").append('<input id="sectionNumber" name="sectionNumber[]" \
-			   			class="input-medium  input" type="text" placeholder="Section Number" value="'+course.Sections[i].Section_Number+'">\
+			   			class="input-medium  input sectionsInut" type="text" placeholder="Section Number" value="'+course.Sections[i].Section_Number+'">\
 			   			<a id="removeField2" role="button" class="btn btn-mini removeField2"><i class="icon-remove-sign"></i></a>\
 			   			<br>');
 			   			$(".removeField2").click(function() {
@@ -830,7 +904,10 @@ function fillClassForm(C_ID){
 							});
 			   			$("#sectionNumbersDiv").append('<input name="CSID[]" type="hidden" value="'+course.Sections[i].CS_ID+'" />');
 			   		}
-			   }			   
+			   }	
+			   if($("#addClass").data("editable")=='false'){
+			   		     	$(".sectionsInut").attr('disabled','disabled')
+			   		     }		   
 			   var numberOfCustomQuestions=0;			   
 			   for(i=0;i<course.Used_Criteria.length;i++){
 			   		switch(course.Used_Criteria[i].Type){

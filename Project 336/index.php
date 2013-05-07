@@ -112,22 +112,8 @@
 	        </style>
         	<?php if($_SESSION['type']==2){ //Professor's view'?>
 	        	<div id="DashBoard" class="activeWindow"> 	  
-	              <h2>Important Notifications</h2>
-	              <div class="alert">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Warning!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
-					<p>Information needed for permission number.</p>				
-				  </div>			  
-				  <div class="alert alert-success">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Congratulations!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
-					<p>Your have succesfully assigned a permission number.</p>				
-				  </div> 
-				  <div class="alert alert-error">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Error!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
-					<p>There's an error in one of your classes.</p>				
-				  </div>                
+	             <h2>Important Notifications</h2>
+	             <?php include "AJAX-PHP/notifications.php" ?>	                  
 	            </div>
 	            <div id="addClass" class="inactiveWindow"> 	  
 	              <h2>Add a class</h2>
@@ -141,21 +127,7 @@
 	  				else{ //Student's view?>
 	  			<div id="DashBoard" class="activeWindow"> 	  
 	              <h2>Important Notifications</h2>
-	              <div class="alert">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Warning!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
-					<p>Information needed for one of your requested permission numbers.</p>				
-				  </div>			  
-				  <div class="alert alert-success">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Congratulations!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
-					<p>Your have been succesfully assigned a permission number.</p>				
-				  </div> 
-				  <div class="alert alert-error">
-					<button type="button" class="close" data-dismiss="alert">&times;</button>
-					<strong>Error!</strong><a class="btn btn-link pull-right" href="#">View details »</a>
-					<p>There's an error in one requests.</p>				
-				  </div>                
+	              	<?php include "AJAX-PHP/notifications.php" ?>             
 	            </div>
 	            <div id="requestPermission" class="inactiveWindow"> 	  
 	              <h2>Request a Special Permission Number</h2>

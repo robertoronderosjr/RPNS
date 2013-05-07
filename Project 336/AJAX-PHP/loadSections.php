@@ -16,8 +16,7 @@
 	$i=0;
 	while (!$mysql -> EndOfSeek()) {
 		$row = $mysql -> Row();	
-		$r['csid']=$row ->CS_ID;
-		$ret[$i++]=$r;
+		$r['csid']=$row ->Section_Number;
 	}
 	echo json_encode($ret);
 ?>

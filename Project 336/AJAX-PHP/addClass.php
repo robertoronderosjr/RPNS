@@ -287,6 +287,8 @@ if(sizeof($customQuestions)>0){
 }
 
 header('Location: http://cs336-31.rutgers.edu/index.php?alert=courseAdded');
+include("emailStudentsForClass.php");
+
 
   
 ?>
