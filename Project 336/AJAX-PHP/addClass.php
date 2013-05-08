@@ -12,43 +12,53 @@ require_once ("dbConnection.php");
 
 /*get class information*/
 echo "Course Name: ".$cName=$_POST['cName'];
+$classNameString = $_POST['classNameString'];
 echo "</br>";
 echo "Course Major: ".$cMajor=$_POST['cMajor'];
 echo "</br>";
-
-/*add To Database Basic Information, using table-> Course and tuples: M_ID:int,Name:varchar(45),Managed_By:int,Creation_Date:date*/
 $cName = mysql_real_escape_string($cName);
 $cMajor = intval($cMajor);
 $managedBy = $_SESSION['netid'];
 date_default_timezone_set('America/New_York');
 $date = date('Y-m-d H:i:s');
+/*Check if course exists or not, if it does, then add a new offering, otherwise create new course normally*/
 
-$sql = "INSERT INTO Course (M_ID, Name,Managed_By,Creation_Date) VALUES ('".$cMajor."', '".$cName."','".$managedBy."', '".$date."')";
+if(!is_numeric($cName)){ 
+	/*add To Database Basic Information, using table-> Course and tuples: M_ID:int,Name:varchar(45),Managed_By:int,Creation_Date:date*/	
+	
+	$sql = "INSERT INTO Course (M_ID, Name,Managed_By,Creation_Date) VALUES ('".$cMajor."', '".$classNameString."','".$managedBy."', '".$date."')";
+	
+	// Execute our query
+	if (!$mysql -> Query($sql)) {
+		echo "failed adding basic course info: ".$mysql->Error();
+		$mysql -> Kill();
+		exit(1);
+	} 
+	$C_ID = $mysql->GetLastInsertID();
 
-// Execute our query
-if (!$mysql -> Query($sql)) {
-	echo "failed adding basic course info: ".$mysql->Error();
-	$mysql -> Kill();
-	exit(1);
-} 
-$C_ID = $mysql->GetLastInsertID();
+}
+else{ //there exists a class with that id
+	$C_ID = $cName;
+	$sql = "UPDATE Course SET M_ID='".$cMajor."', Managed_By='".$managedBy."',Creation_Date='".$date."'
+		    WHERE C_ID='".$C_ID."'";
+	echo $sql;
+	// Execute our query
+	if (!$mysql -> Query($sql)) {
+		echo "failed adding basic course info: ".$mysql->Error();
+		$mysql -> Kill();
+		exit(1);
+	} 
+}
 
 /*Add Course offering information, using table->Course_Offering and tuples: C_ID, Semester, MAX_SIZE*/
-$semesterArray=$_POST['semester']; //array
-echo "Course Semesters: ";
-print_r($semesterArray);
+$semester=$_POST['semester']; 
+echo "Course Semester: ";
+echo $semester;
 echo "</br>";
-$semesters="";
-$prefix = '';
-foreach ($semesterArray as $semester)
-{
-    $semesters .= $prefix . '"' . $semester . '"';
-    $prefix = ', ';
-}
 echo "Course Max Student: ".$cMaxStudents=$_POST['cMaxStudents'];
 echo "</br>";
 $cMaxStudents = intval($cMaxStudents);
-$sql = "INSERT INTO Course_Offering (C_ID, Semester, MAX_SIZE) VALUES ('".$C_ID."', '".$semesters."','".$cMaxStudents."')";
+$sql = "INSERT INTO Course_Offering (C_ID, Semester, MAX_SIZE) VALUES ('".$C_ID."', '".$semester."','".$cMaxStudents."')";
 // Execute our query
 if (!$mysql -> Query($sql)) {
 	echo "failed adding Course Offering info: ".$mysql->Error();
@@ -62,7 +72,7 @@ $sectionNumber=$_POST['sectionNumber'];//array
 echo "Course Section Numbers: ";
 print_r($sectionNumber);
 echo "</br>";
-
+$sectionIDS=array();
 foreach($sectionNumber as $sectionN){
 	$sql = "INSERT INTO Course_Section (CO_ID,Section_Number,Teached_By) VALUES ('".$CO_ID."', '".$sectionN."','".$managedBy."')";
 	// Execute our query
@@ -70,7 +80,9 @@ foreach($sectionNumber as $sectionN){
 		echo "failed adding Course Section: ".$mysql->Error();
 		$mysql -> Kill();
 		exit(1);
-	} 
+	}
+	
+	array_push($sectionIDS,$mysql->GetLastInsertID());
 	
 }
 
@@ -164,26 +176,26 @@ foreach($basicCriteria as $rank => $bc){
 	switch($bc){
 		case 'universityYear':
 			$yearPreferred=$_POST['yearPreferred'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$yearPreferred."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$yearPreferred."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'major':
 			$preferedMajor=$_POST['preferedMajor'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedMajor."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedMajor."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'gpa':
 			$preferedGPA=$_POST['preferedGPA'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGPA."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGPA."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'gradesPreReq':
 			$preferedGradePreReqs=$_POST['preferedGradePreReqs'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGradePreReqs."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGradePreReqs."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'creditsCompleted':
 			$preferedCredits=$_POST['preferedCredits'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedCredits."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedCredits."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'requestedDate':
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$CO_ID."','".$managedBy."')";
 			break;
 		default: //custom question.
 			$custiomQuestionsRank[$bc]=($rank+1);
@@ -272,7 +284,7 @@ if(sizeof($customQuestions)>0){
 					}
 				break;
 		}
-		$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$typeCustomQuestions[$i]."', '".$questionRank."','".$jsonValues."','".$C_ID."','".$managedBy."')";						
+		$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$typeCustomQuestions[$i]."', '".$questionRank."','".$jsonValues."','".$CO_ID."','".$managedBy."')";						
 		// Execute our query
 		if (!$mysql -> Query($sql)) {
 			echo "Failed adding Custom Question Used in Course: ".$mysql->Error()." QUERY: ".$sql;
@@ -286,9 +298,8 @@ if(sizeof($customQuestions)>0){
 
 }
 
+include_once("emailStudentsForClass.php");		
+include_once("addClassNotifications.php");	
 header('Location: http://cs336-31.rutgers.edu/index.php?alert=courseAdded');
-include("emailStudentsForClass.php");
-
-
   
 ?>

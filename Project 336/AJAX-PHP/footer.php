@@ -57,6 +57,13 @@ if(isset($_GET['alert'])){
 	else if($_GET['alert']=='noSPNS'){
 		echo "<script>var noSPNS=true;</script>";
 	}
+	else if($_GET['alert']=='roomFull'){
+		echo "<script>var roomFull=true;</script>";
+	}
+	else if($_GET['alert']=='spnsAdded'){
+		echo "<script>var spnsAdded=true;</script>";
+	}
+	
 	
 	
 }

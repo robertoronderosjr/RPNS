@@ -8,10 +8,13 @@ ini_set('display_errors', '1');
 require ("dbConnection.php");
 
 $C_ID = $_GET['C_ID'];
+$CO_ID = $_GET['CO_ID'];
 $courseArray=Array();
 
 /*Get basic info*/
-$sql = "SELECT * FROM Course WHERE C_ID='".$C_ID."'";
+$sql = "SELECT c.M_ID,c.Name,c.Managed_By,c.Creation_Date 
+		FROM Course as c, Course_Offering as co
+		WHERE c.C_ID=co.C_ID AND co.C_ID='".$C_ID."' AND co.CO_ID='".$CO_ID."'";
 // Execute our query
 if (!$mysql -> Query($sql)) {
 	echo "Failed retrieving Course: ".$mysql->Error();
@@ -25,7 +28,7 @@ $courseArray['Name']=$row->Name;
 $courseArray['Managed_by']=$row->Managed_By;
 
 /*Get course offering*/
-$sql = "SELECT * FROM Course_Offering WHERE C_ID='".$C_ID."'";
+$sql = "SELECT * FROM Course_Offering WHERE CO_ID='".$CO_ID."'";
 // Execute our query
 if (!$mysql -> Query($sql)) {
 	echo "Failed retrieving Course Offering: ".$mysql->Error();
@@ -89,7 +92,7 @@ while (! $mysql->EndOfSeek()) {
 
 /*Get Professor's Course Requirements*/
 $courseArray['Used_Criteria']=array();
-$sql = "SELECT * FROM Prof_Course_Requirements WHERE C_ID='".$C_ID."' AND Prof_ID='".$courseArray['Managed_by']."'";
+$sql = "SELECT * FROM Prof_Course_Requirements WHERE CO_ID='".$CO_ID."' AND Prof_ID='".$courseArray['Managed_by']."'";
 // Execute our query
 if (!$mysql -> Query($sql)) {
 	echo "Failed retrieving Course Used Criteria: ".$mysql->Error();

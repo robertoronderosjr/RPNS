@@ -5,31 +5,22 @@
  session_start();
 require("dbConnection.php");
 
-	$file=$_POST["file"]; // Erase for function
-	$CO_ID=$_POST["CO_ID"]; // ERase for function
-	$content=file_get_contents($file);
-	$content=explode(",", $content);
-	$sql="SELECT * FROM Course_Section WHERE CO_ID=".$CO_ID;	
-	if (!$mysql -> Query($query)){
-		echo "Failed to get course section";
+	
+echo $CS_ID=$_POST["csid"]; 
+$spns=$_POST['spnsp'];//array();
+print_r($spns);
+
+foreach($spns as $pn){
+	$sql="INSERT INTO Permissions (CS_ID, P_Number, Available) VALUES ('".$CS_ID."', ".$pn.", 'y')";
+	echo $sql."<br/>";
+	if (!$mysql -> Query($sql)){
+		echo "Failed adding permission number ".$mysql->Error();;
 		$mysql -> Kill();
-	}
-	$mysql -> MoveFirst();
-	while (!$mysql -> EndOfSeek()) {
-		$row = $mysql -> Row();
-		for($i=0;$i<count($content);$i++){
-		$sql="INSERT INTO Permissions (CS_ID, P#, Available) VALUES ('".$row->CS_ID."', ".$content[$i].", 'y')";
-		if (!$mysql -> Query($query)){
-			echo "Failed";
-			$mysql -> Kill();
-		}
+		exit(1);
+	}	
+}
 	
-	}
-		
-	}
-		
-	
-	echo "Success";
+header('Location: http://cs336-31.rutgers.edu/index.php?alert=spnsAdded');
 
 
 ?>

@@ -42,7 +42,7 @@ if (! $mysql->Query($sql)) {$mysql->Kill(); $success=false;}
 if($success){
 	$to = $email;
 	$subject = "RPNS - Registration Succesful!";
-	$message = "Hello ".$name.", \n\n Your account has been succesfully registered in our system. Please keep the following information for your records:\n\n".
+	$message = "Hello ".$name.", \n\nYour account has been succesfully registered in our system. Please keep the following information for your records:\n\n".
 				"NetID: ".$netid."\n".
 				"Password: ".$passwordNotHashed."\n\n".
 				"Sincerely,\nRPNS Team";

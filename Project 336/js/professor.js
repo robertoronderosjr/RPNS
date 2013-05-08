@@ -7,9 +7,13 @@ var counter;
 var customQuestionCounter=0;
 var selectedCustomCriteria="0";
 var selectedPreReq;
+var selectedClass;
 var editing;
 var courseSectionEditing=false;
 var coid;
+var assignBTN;
+var denyBTN;
+var aOrD;
 $(document).ready(function() {
 	
 	courseSectionEditing=false;
@@ -19,6 +23,7 @@ $(document).ready(function() {
 			
 			editing=true;
 			var courseID=classEdit;
+			
 			editableClass(courseID);
 			
 	}
@@ -35,6 +40,26 @@ $(document).ready(function() {
 				alertWindow("Success!", "You correctly edited a class.", "alert-success");
 			}
 		}
+		
+	/*alert spns added*/
+	if ( typeof (spnsAdded) != "undefined" && spnsAdded !== null && spnsAdded != "") {
+			if (spnsAdded) {
+				alertWindow("Success!", "You correctly edited special permission numbers to a section.", "alert-success");
+			}
+		}
+		
+		
+		
+		
+	/*date picker for assign modal*/
+	
+	$('#datePicker').datetimepicker({
+      pickTime: false
+    });
+    
+    $("#expDate").click(function(){
+		$('#datePicker').datetimepicker('show');
+	});
 
 
 	/*course pre-reqs auto-complete*/
@@ -55,6 +80,41 @@ $(document).ready(function() {
 	      	var val = $(this).val();
 	      	$(this).next().next().attr('value',val);
 	    }
+      }
+    });
+    
+    $("#lookupClasses").click(function() {		
+		var semester = $("#semestersP option:selected").val();
+		console.log(semester);
+		if(semester!=""){
+			$('#classesResults').load('AJAX-PHP/seeClassesProfessor.php?Semester='+semester+'');
+		}
+		else{
+			alertWindow("Error!", "Please select a value from all drop down boxes.", "alert-error");
+		}
+	});	
+    
+    $("#cName").change(function(){
+    	var val = $(this).val();
+		$(this).next().next().attr('value',val);	
+    })
+    
+    $("#cName").autocomplete({
+      source: "AJAX-PHP/loadCourses.php",
+      minLength: 2,     
+      open: function (event,ui) {
+        selectedClass=false;
+        
+      },
+      select: function( event, ui ) {  
+      	$(this).next().next().attr('value',ui.item.id);
+      	selectedClass=true;
+      },
+      change: function(event,ui){
+		   if(!selectedClass){
+		     var val = $(this).val();
+		     $(this).next().next().attr('value',val);	
+		   }    
       }
     });
     
@@ -278,13 +338,28 @@ $(document).ready(function() {
 		else{
 			var Section_Number= $(this).attr('sectionNM');
 			var CO_ID = $("#COID").attr('value');
-			console.log(Section_Number,CO_ID);
-			addSection(Section_Number,CO_ID);
+			var C_ID = $("#CID").attr('value');
+			console.log(Section_Number,CO_ID,C_ID);
+			addSection(Section_Number,CO_ID,C_ID);
 			courseSectionEditing=false;
 			console.log(courseSectionEditing);
 		}
 
 	});
+	
+	$("#assignDenyModalBtn").click(function(){
+		var profComments = $("#profComments").val();
+		var prid = $("#assignDenyModal").data('prid');	
+		if(aOrD=='assign'){					
+			var expDate = $("#expDate").val();
+			assignPermission(profComments,prid,expDate);
+			$("#assignDenyModal").modal('hide');
+		}
+		else{
+			denyPermission(profComments,prid);
+			$("#assignDenyModal").modal('hide');
+		}
+	})
 	
 	$("#customCriteriaModalOKBtn").click(function() {
 		customQuestionCounter++;
@@ -487,6 +562,16 @@ $(document).ready(function() {
 		}
 	});
 	
+	$('#seeClasses').on('click', ".spnsbtn", function(){			
+		var coid= $(this).attr('coid');
+		loadSections(coid);
+	});
+	
+	$('#seeClasses').on('click', ".seespnsbtn", function(){			
+		var coid= $(this).attr('coid');
+		loadSections(coid);
+	});
+	
 	$('#seeClasses').on('click', "#seeEditClass", function(){	
 		var cid = $(this).attr('classID');
 		var coid= $(this).attr('coid');
@@ -495,24 +580,190 @@ $(document).ready(function() {
 	
 	$('#seeClasses').on('click', ".showCancelled", function(){	
 		console.log('show cancelled');
-		$(this).next().next().next().toggle();
+		$(this).next().next().next().next().toggle();
 	});
+	
+	$('#seeClasses').on('click', ".showAssigned", function(){	
+		console.log('show assigned');
+		$(this).next().next().next().next().next().toggle();
+	});
+	
+	
 	$('#addClass').on('click', "#goBackBtn", function(){			
 		$('#seeClassesBtn').click();		
 	});
 	
 	$('#seeClasses').on('click', ".assignPermission", function(){			
+		var prid= $(this).attr('prid');
+		$("#assignDenyModal").data('prid',prid);
+		$("#datePickerLabel").css("display",'block');
+		$("#assignDenyModal #datePicker").css('display','block');
+		aOrD='assign';
 		$("#assignDenyModal").modal("show");
+		assignBTN = $(this);
 	});
 	
 	$('#seeClasses').on('click', ".denyPermission", function(){	
-		$("#assignDenyModal").modal("show");		
+		var prid= $(this).attr('prid');
+		$("#assignDenyModal").data('prid',prid);
+		$("#datePickerLabel").toggle();
+		$("#assignDenyModal #datePicker").toggle();
+		aOrD='deny';
+		$("#assignDenyModal").modal("show");
+		denyBTN = $(this);	
 	});
+	
+	$('#seeClasses').on('click', ".seeDetails", function(){	
+		var prid= $(this).attr('prid');
+		loadRequestDetails(prid);
+		$("#seeDetailsRequestedModal").modal("show");		
+	});
+	
+	$("#seedsection").change(function(){
+		listSPNS($(this).val());		
+	})
 	
 	
 });
 
-function editableClass(C_ID){
+function listSPNS(csid){
+	$.get("../AJAX-PHP/listsSNPNS.php", {
+		CS_ID : csid,		
+		async:false
+	}).done(function(data) {
+		console.log(data);		
+		$("#listspns").empty();
+		var spns = jQuery.parseJSON(data);
+		$("#listspns").append('<ul>');
+		for(i=0;i<spns.length;i++){
+			$('#listspns').append('<li>' + spns[i].pnum + '</option>');
+		}
+		$("#listspns").append('</ul>');	
+	});
+}
+
+function assignPermission(profComments,prid,expDate){
+	$.get("AJAX-PHP/assignPermissionNumber.php", {
+		PR_ID : prid,
+		comments: profComments,
+		expiration: expDate,
+		async:false
+	}).done(function(data) {
+		console.log(data);
+		if(data=="success"){
+			alertWindow("Success!", "Permission Number has been assigned.", "alert-success");
+			assignBTN.attr('disabled','disabled');			
+			window.setTimeout(function() {
+				location.reload();	
+			}, 4000);						
+		}
+		else{
+			alertWindow("Error!", data, "alert-error");
+		}
+	});
+}
+
+function denyPermission(profComments,prid){
+	$.get("AJAX-PHP/denyPermissionNumber.php", {
+		PR_ID : prid,
+		comments: profComments,
+		async:false
+	}).done(function(data) {
+		console.log(data);
+		if(data=="success"){
+			alertWindow("Success!", "Request has been denied.", "alert-success");
+			denyBTN.attr('disabled','disabled');			
+			window.setTimeout(function() {
+				location.reload();	
+			}, 4000);
+					
+		}
+		else{
+			alertWindow("Error!", data, "alert-error");
+		}
+	});
+}
+
+function loadRequestDetails(prid){
+	$.get("AJAX-PHP/getRequestDetails.php", {
+		PR_ID : prid,
+		async:false
+	}).done(function(data) {
+		console.log("data:"+data);		
+		var response = jQuery.parseJSON(data);
+		var numberOfCustomQuestions=1;	
+		$("#seeDetailsRequestedModal .modal-body").empty();
+		$.each(response, function(key, value) { 
+			console.log("response key: "+key+" response value: "+value);
+			switch(key){
+			   			case 'universityYear':
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="universityYear"><b>Current University Year</b></label>\
+																				<div class="controls">\
+																					<span id="universityYear" type="text" >'+value+'</span>\
+																				</div><br/>');			   				
+			   				break;
+			   			case 'creditsCompleted':
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="creditsCompleted"><b>Credits Completed</b></label>\
+																				<div class="controls">\
+																					<span id="creditsCompleted" type="text" >'+value+'</span>\
+																				</div><br/>');	
+			   				break;
+			   			case 'gradesPreReq':
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="gradesPreReq"><b>Credits Completed</b></label>\
+																				<div class="controls">\
+																					<span id="gradesPreReq" type="text" >'+value+'</span>\
+																				</div><br/>');	
+			   				break;
+			   			case 'major':
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="major"><b>Major</b></label>\
+																				<div class="controls">\
+																					<span id="major" type="text" >'+value+'</span>\
+																				</div><br/>');
+			   				break;
+			   			case 'gpa':
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="gpa"><b>G.P.A.</b></label>\
+																				<div class="controls">\
+																					<span id="gpa" type="text" >'+value+'</span>\
+																				</div><br/>');
+			   				
+			   				break;
+			   			case 'ck'+numberOfCustomQuestions:
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="ck'+numberOfCustomQuestions+'"><b>Custom Question # '+numberOfCustomQuestions+'</b></label>\
+																				<div class="controls">\
+																					<span id="ck'+numberOfCustomQuestions+'" type="text" >'+value+'</span>\
+																				</div><br/>');
+			   				numberOfCustomQuestions++;
+			   				break;
+			   			case 'cb'+numberOfCustomQuestions:
+			   				
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="cb'+numberOfCustomQuestions+'"><b>Custom Question # '+numberOfCustomQuestions+'</b></label>\
+																				<div class="controls">\
+																					<span id="cb'+numberOfCustomQuestions+'" type="text">'+value[0]+'</span><br/>');
+																					$("#seeDetailsRequestedModal .modal-body").append('<ul>');
+																					for(i=1;i<value.length;i++){																						
+																					$("#seeDetailsRequestedModal .modal-body").append('<li>'+value[i]+'</li>');
+																					}
+																					$("#seeDetailsRequestedModal .modal-body").append('</ul></div><br/>');
+																				
+			   				numberOfCustomQuestions++;
+			   				break;
+			   			case 'rb'+numberOfCustomQuestions:
+			   				$("#seeDetailsRequestedModal .modal-body").append('<label class="control-label" for="rb'+numberOfCustomQuestions+'"><b>Custom Question # '+numberOfCustomQuestions+'</b></label>\
+																				<div class="controls">\
+																					<span id="rb'+numberOfCustomQuestions+'" type="text" >'+value+'</span>\
+																				</div><br/>');	  
+							numberOfCustomQuestions++;													 				
+			   				break;
+			   			
+			   		}
+		}); 
+			   
+			   		
+			   	
+			
+	});
+}
+function editableClass(C_ID,CO_ID){
 	$.get("AJAX-PHP/classEditable.php", {
 					C_ID : C_ID,
 					async:false
@@ -525,20 +776,45 @@ function editableClass(C_ID){
 						$("#addClass").data("editable", 'true');			
 						
 					}
-					fillClassForm(C_ID);
+					fillClassForm(C_ID,coid);
 					if ($('#addClass').hasClass('inactiveWindow')) {
 						$('.activeWindow').removeClass('activeWindow').addClass('inactiveWindow');
 						$('#addClass').removeClass('inactiveWindow').addClass('activeWindow');						
 						$('#navigationBarLeft .active').removeClass('active');
 						$('#seeClassesBtn').addClass('active');
 						$("#addClass #submitBtn").html('Edit Class');
+						$("#addClass #submitBtn").after('<button class="btn btn-danger pull-right" id="deleteClass" cid="'+C_ID+'" >Delete Class</button>');
+						$("#deleteClass").click(function(){
+							event.preventDefault();
+							var cid = $(this).attr('cid');
+							deleteClass(cid);
+						})						
 						$("#addClass").find('form').attr("action","AJAX-PHP/editClass.php");
-						$("#addClass").find('form').append("<input name='CID' type='hidden' value='"+C_ID+"'/>");
+						$("#addClass").find('form').append("<input name='CID'  id='CID' type='hidden' value='"+C_ID+"'/>");
 						$("#addClass").find('form').append("<input name='COID' id='COID' type='hidden' value='"+coid+"'/>");
 						$("#clear").remove();
 					}			
 			
 				});
+}
+
+function deleteClass(cid){
+	$.get("AJAX-PHP/deleteClass.php", {
+		C_ID : cid,		
+		async:false
+	}).done(function(data) {
+		console.log(data);
+		if(data=="success"){
+			alertWindow("Success!", "Class has been deleted.", "alert-success");				
+			window.setTimeout(function() {
+				window.location.href = "index.php";
+			}, 2000);
+					
+		}
+		else{
+			alertWindow("Error!", data, "alert-error");
+		}
+	});
 }
 
 function resetForm(){
@@ -687,18 +963,16 @@ function loadDepartments() {
 
 	});
 }
-function loadSections(COID) {
-	//console.log("Loading.."+COID);
-	$('#dsection').empty();
-		//console.log("Dave");
+function loadSections(COID) {	
+	$('#dsection,#seedsection').empty();		
 	$.get("../AJAX-PHP/loadSections.php", {
 	CO_ID : COID
 	}).done(function(data) {
-		//console.log(data);
+		console.log(data);
 		var sections=jQuery.parseJSON(data);
-		$('#dsection').append('<option>Select Section</option>');
+		$('#dsection,#seedsection').append('<option>Select Section</option>');
 		for(i=0;i<sections.length;i++){
-			$('#dsection').append('<option value="' + sections[i].csid + '">Section: ' + sections[i].csid + '</option>');
+			$('#dsection,#seedsection').append('<option value="' + sections[i].CS_ID + '">' + sections[i].Section_number + '</option>');
 		}
 		
 
@@ -732,9 +1006,10 @@ function addMajor(D_ID, name) {
 			$("#addMajorModal").modal("hide");
 			alertWindow("Error", "There was an error trying to add the new Major. Please contact the Web-Developer.", "alert-error");
 		} else {
-			loadMajors();
+			loadMajors('#cMajor');
 			$("#addMajorModal").modal("hide");
 			alertWindow("Success!", "You added new Major to the System.", "alert-success");
+			
 		}
 
 	});
@@ -761,10 +1036,11 @@ function addDepartment(U_ID, name) {
 
 }
 
-function addSection(Section_Number,CO_ID){
+function addSection(Section_Number,CO_ID,C_ID){
 	$.get("AJAX-PHP/addSection.php", {
 		Section_Number : Section_Number,
-		CO_ID : CO_ID
+		CO_ID : CO_ID,
+		C_ID:C_ID
 	}).done(function(data) {
 		console.log(data);
 		if (data != "success") {			
@@ -815,10 +1091,10 @@ function alertWindow(alertInfo, alertDesc, type) {
 	}, 5000);
 }
 
-function fillClassForm(C_ID){
+function fillClassForm(C_ID,CO_ID){
 	$.ajax({		  
 		  url: "AJAX-PHP/getCourse.php",
-		  data: { C_ID: C_ID }	  
+		  data: { C_ID: C_ID , CO_ID:CO_ID }	  
 		}).done(function( data ) {	
 			   console.log(data);			   
 			   	
@@ -875,13 +1151,12 @@ function fillClassForm(C_ID){
 			   if($("#addClass").data("editable")=='false'){
 								$(".removeField").remove();
 							}
-			   for(i=0;i<course.Semesters.length;i++){
-			   		     $("#semestersAvailable input[value='"+course.Semesters[i]+"']").attr('checked','checked');
-			   		     
-			   }
+			   
+			   $("#semester option[value='"+course.Semesters[0]+"']").prop('selected', true);
+			   
 			   if($("#addClass").data("editable")=='false'){
-			   		     	$("#semestersAvailable input").attr('disabled','disabled')
-			   		     }
+			   		   $("#semester").attr('disabled','disabled');
+			   	}
 			   courseSectionEditing=true;
 			   for(i=0;i<course.Sections.length;i++){
 			   		if(i==0){

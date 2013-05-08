@@ -67,13 +67,7 @@ if($success){
 	$_SESSION['type'] = $accountType;
 	
 	header('Location: http://cs336-31.rutgers.edu/index.php?alert=registered');
-	/*if(strpos($_SERVER['HTTP_REFERER'],"?alert")!=false){ //url doesn't contain it
-			$urlb = explode("?",$_SERVER['HTTP_REFERER']);
-			$url = $urlb[0];
-		   header('Location: ' . $url."?alert=registered");
-	}else{
-		header('Location: ' . $_SERVER['HTTP_REFERER']."?alert=registered");
-	}*/
+
 }
 
 ?>

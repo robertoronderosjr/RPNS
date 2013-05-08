@@ -8,7 +8,7 @@ require ("dbConnection.php");
 
 $C_ID = intval($_GET['C_ID']);
 
-$sql = "SELECT * FROM `Student_P#_Request` WHERE CourseID='".$C_ID."'";
+$sql = "SELECT * FROM `Student_P#_Request` WHERE CourseID='".$C_ID."' AND Active='y'";
 
 // Execute our query
 $mysql -> Query($sql);

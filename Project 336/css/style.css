@@ -8,7 +8,24 @@ Recaptcha Style Captcha
  
  Get JQuery, PHP, AJAX, Codeigniter and MYSQL Tutorials and Demos on Blog
  */
+      /* Fine Uploader
+      -------------------------------------------------- */
+      .qq-upload-list {
+        text-align: left;
+      }
  
+      /* For the bootstrapped demos */
+      li.alert-success {
+        background-color: #DFF0D8;
+      }
+ 
+      li.alert-error {
+        background-color: #F2DEDE;
+      }
+ 
+      .alert-error .qq-upload-failed-text {
+        display: inline;
+      }
 #captcha-wrap{
 	border:solid #870500 1px;
 	width:270px;

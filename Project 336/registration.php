@@ -133,4 +133,6 @@
       </div>     
 	
 <?php include "AJAX-PHP/footer.php" ?>
+
+	<script type="text/javascript" src="js/registration.js"></script>
     

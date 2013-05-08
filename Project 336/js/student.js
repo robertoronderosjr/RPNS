@@ -1,3 +1,4 @@
+var cancelled;
 $(document).ready(function() {
 	
 	/*alert request done*/
@@ -13,6 +14,15 @@ $(document).ready(function() {
 			
 			if (noSPNS) {
 				alertWindow("Error!", "There are no permission numbers available for this section.", "alert-error");
+			}
+		}
+		
+		
+	/*room full*/	
+	if ( typeof (roomFull) != "undefined" && roomFull !== null && roomFull != "") {
+			
+			if (roomFull) {
+				alertWindow("Error!", "There are no spots in that room. The room is full.", "alert-error");
 			}
 		}
 	
@@ -75,17 +85,53 @@ $(document).ready(function() {
 			async:false
 		}).done(function(data) {
 			console.log(data);		
-			if(data="success"){				
+			if(data=="Success"){				
 				alertWindow("Success!", "Your Request was deleted from the system.", "alert-success");
+				cancelled=true;
 			}
 			else{
-				alertWindow("Error!", "Your Request couldn't be handled.", "alert-error");
+				alertWindow("Error!", data, "alert-error");
+				cancelled=false;
 			}
 		});
-		$(this).closest('.accordion-group').remove();
+		if(cancelled){
+			$(this).closest('.accordion-group').remove();
+		}
+		
+	});
+	
+	$('#seeRequested').on('click', ".useIt", function(){			
+		var paid= $(this).attr('paid');
+		$("#seeSPNModal").data('paid',paid);
+		$("#spnModalDiv").css('display','n');
+		$("#seeSPNModal").modal("show");
+	});
+	
+	$("#useItFinal").click(function(){
+		var paid= $("#seeSPNModal").data('paid');
+		getSPN(paid);
 	});
 	
 })
+
+function getSPN(paid){
+	$.ajax({
+		type: "POST",
+		url : "AJAX-PHP/getSPN.php",
+		data: { PA_ID: paid },
+		async : false
+	}).done(function(data) {
+		console.log(data);
+		if(data!='expired'){
+			$("#spnModal").html(data);
+		}
+		else{
+			$("#spnModal").html('Sorry but your Special Permission Number Expired!');
+		}
+		$("#spnModalDiv").css('display','block');
+
+	});
+}
 
 function loadDepartments() {
 	$('#departments').empty();

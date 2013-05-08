@@ -10,7 +10,8 @@ Author: Roberto Ronderos Botero
 				<label class="control-label" for="cName"><b>Course Name</b></label>
 				<br>
 				<div class="controls">
-					<input id="cName" name="cName" class="input-medium input" type="text" placeholder="Course Name" required>
+					<input id="cName" name='classNameString'  class="input-medium input" type="text" placeholder="Course Name" required/>
+					<input name="cName" type="hidden" value=""/>
 				</div>
 			</div>
 			<div class="control-group">
@@ -26,15 +27,12 @@ Author: Roberto Ronderos Botero
 				<label class="control-label" for="population"><b>When will it be offered?</b></label>
 				<br/>
 				<div id="semestersAvailable" class="controls">
-					<input type="checkbox" name="semester[]" value="Spring">
-					Spring
-					<br>
-					<input type="checkbox" name="semester[]" value="Summer">
-					Summer
-					<br>
-					<input type="checkbox" name="semester[]" value="Fall">
-					Fall
-					<br>
+					<select id="semester" name="semester">
+						<option>Select a Semester</option>
+						<option value="Spring">Spring</option>
+						<option value="Summer">Summer</option>
+						<option value="Fall">Fall</option>
+					</select>
 				</div>
 				<br/>
 			</div>

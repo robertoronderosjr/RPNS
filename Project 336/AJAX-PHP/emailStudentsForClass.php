@@ -10,15 +10,18 @@
 	
 	if (!$mysql -> Query($query))
 		$mysql -> Kill();
+	$result = $mysql ->Records();
 	
-	$mysql -> MoveFirst();
-	while (!$mysql -> EndOfSeek()) {
-		$row = $mysql -> Row();
-		$to = $row->Email;
-		$message = "Hello ".$row->Name.", \n\nA new course has been added to the system\n\n".
-			"Course: ".$cName."\n".
-			"Professor: ".$_SESSION['name']." ".$_SESSION['lastname']."\n\nLogin to your account for more information\n\n".
+	while ($row = mysql_fetch_array($result)){
+		
+		$to = $row['Email'];
+		$netid = $row['NetID'];
+		$message = "Hello ".$row['Name'].", \n\nA new course offering has been added to the system\n\n".
+			"Course: ".$classNameString."\n".
+			"Professor: ".$_SESSION['name']." ".$_SESSION['lastname']."\n".
+			"Semester: ".$semester."\n\nLogin to your account for more information\n\n".
 			"Sincerely,\nRPNS Team";
 		mail($to,$subject,$message,$headers);	
+		
 	}
 ?>		

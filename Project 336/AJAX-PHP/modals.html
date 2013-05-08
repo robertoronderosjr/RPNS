@@ -88,8 +88,8 @@
 </div>
 
 <div id="assignDenyModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="assignDenyModalLabel" aria-hidden="true">
-	<div class="modal-header">
-		<h3 id="assignDenyModalLabel"></h3>
+	<div class="modal-header">		
+		<h3 id="assignDenyModalLabel">Action on request</h3>
 	</div>
 	<div class="modal-body">
 		<div class="control-group">
@@ -99,10 +99,60 @@
 				<input id="profComments" name="profComments" class="input-large" type="text" placeholder="Type Comments" required>
 			</div>
 		</div>
+		<label id="datePickerLabel" class="control-label" for="dob">Expiration Date</label>
+                            <div id="datePicker" class="input-prepend">
+                                       <span class="add-on">
+                                           <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                                       </span>
+                                       <input data-format="yyyy-MM-dd" type="text" id="expDate" name="expDate" placeholder="Expiration Date"></input>                             
+                                 </div> 
 	</div>
 	<div class="modal-footer">
 		<button id="assignDenyModalBtn"  class="btn btn-primary">
 			Ok &raquo;
+		</button>
+	</div>
+</div>
+
+
+<div id="seeDetailsRequestedModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="seeDetailsRequestedModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			×
+		</button>
+		<h3 id="seeDetailsRequestedModalLabel">Request Details</h3>
+	</div>
+	<div class="modal-body">
+		
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">
+			Close
+		</button>
+	</div>
+</div>
+
+<div id="seeSPNModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="seeSPNModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			×
+		</button>
+		<h3 id="seeSPNModalLabel">See SPN</h3>
+	</div>
+	<div class="modal-body">
+		<h4>You can only use this permission number once. Please make sure you use it before it expires.</h4>
+		<h5>When you click the 'use it' button you will see your permission number, and you will be able to use it only once.</h5>
+		<br/><button id='useItFinal' class='btn btn-warning'>USE IT</button>
+		<br/>
+		<br/>		
+		<div id='spnModalDiv' style='display:none;'>
+			<h4>Your special permission number is:</h4>
+			<h3 style="border-style:solid;border-width:1px;" id='spnModal'></h3>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">
+			Close
 		</button>
 	</div>
 </div>
@@ -136,9 +186,39 @@
 </div>
 
 
+<div id="seeSPNSModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="seeSPNSModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+			×
+		</button>
+		<h3 id="seeSPNSModalLabel">See Special Permission Numbers</h3>
+	</div>
+	<div class="modal-body">
+		<div class="control-group">
+			<label class="control-label" for="dsection"><b>Sections</b></label>
+			<br>
+			<div class="controls">
+				<select id="seedsection" name="dsection" >
+					<option value="0">Select a Section</option>
+				</select>
+			</div>
+			<br/>
+			<div id="listspns">
+				
+			</div>			
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">
+			Close
+		</button>
+	</div>
+</div>
+
+
 <div id="addSPNSModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="addSPNSModalLabel" aria-hidden="true">
 	<div class="modal-header">
-		<h3 id="caddSPNSModalLabel">Add Special Permission Numbers</h3>
+		<h3 id="addSPNSModalLabel">Add Special Permission Numbers</h3>
 	</div>
 	<div class="modal-body">
 		<div class="control-group">
@@ -154,8 +234,12 @@
 			  	<button type="button" value="1" class="btn" id="spnsradio" data-toggle="button">File</button>
 			</div>
 			
-			<div id="manualModal" style="display: none;">
-				<br/><input id="spnmanual" class="input-medium" type="text" placeholder="Special Permission Number">
+			<div id="manualModal" style="display: block;">
+				<form id="manualForm" action='AJAX-PHP/addPermissions.php' method='post'>
+				<br/><input name="spnsp[]" class="input-large" type="text" placeholder="Special Permission Number"><br/>
+				<br/><a id="addSPN" role="button" class="btn btn-mini" data-toggle="modal"><i class="icon-plus"></i> Add Permission Number</a><br/>	
+				<input id="csidHiddenModal" name='csid' value='' type="hidden"/>
+				</form>			
 			</div>
 			<div id="fileModal" style="display: none;">
 				<br/><div id='jquery-wrapped-fine-uploader'></div>
@@ -173,6 +257,8 @@
 <style>
 	#AlertWindow{
 		display:none;
+		position: fixed;
+		top: 45px;
 	}
 </style>
 <div id="AlertWindow" class="alert">

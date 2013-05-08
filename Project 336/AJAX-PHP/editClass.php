@@ -7,7 +7,7 @@ ini_set('display_errors', '1');
 session_start();
 require_once ("dbConnection.php");
 
-$C_ID = $_POST['CID'];  
+$C_ID = $_POST['CID']; 
 
 /*get class information*/
 echo "Course Name: ".$cName=$_POST['cName'];
@@ -34,17 +34,9 @@ if (!$mysql -> Query($sql)) {
 } 
 
 /*Add Course offering information, using table->Course_Offering and tuples: C_ID, Semester, MAX_SIZE*/
-$semesterArray=$_POST['semester']; //array
+$semester=$_POST['semester']; 
 echo "Course Semesters: ";
-print_r($semesterArray);
-echo "</br>";
-$semesters="";
-$prefix = '';
-foreach ($semesterArray as $semester)
-{
-    $semesters .= $prefix . '"' . $semester . '"';
-    $prefix = ', ';
-}
+print_r($semester);
 echo "Course Max Student: ".$cMaxStudents=$_POST['cMaxStudents'];
 echo "</br>";
 $cMaxStudents = intval($cMaxStudents);
@@ -54,7 +46,7 @@ $CO_ID=$_POST['COID'];
 echo "C_ID:".$C_ID." AND CO_ID:".$CO_ID."<br/>";
 
 $sql = "UPDATE Course_Offering
-		SET Semester='".$semesters."', MAX_SIZE='".$cMaxStudents."'
+		SET Semester='".$semester."', MAX_SIZE='".$cMaxStudents."'
 		WHERE C_ID='".$C_ID."' AND CO_ID='".$CO_ID."'"; 
 // Execute our query
 if (!$mysql -> Query($sql)) {
@@ -162,7 +154,7 @@ print_r($basicCriteria);
 echo "</br>";
 echo "Deleting prev used criteria. <br/>";
 $sql = "DELETE FROM Prof_Course_Requirements
-		WHERE C_ID='".$C_ID."'"; 
+		WHERE CO_ID='".$CO_ID."'"; 
 // Execute our query
 if (!$mysql -> Query($sql)) {
 	echo "failed deleting prev used criteria: ".$mysql->Error();
@@ -175,26 +167,26 @@ foreach($basicCriteria as $rank => $bc){
 	switch($bc){
 		case 'universityYear':
 			$yearPreferred=$_POST['yearPreferred'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$yearPreferred."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$yearPreferred."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'major':
 			$preferedMajor=$_POST['preferedMajor'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedMajor."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedMajor."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'gpa':
 			$preferedGPA=$_POST['preferedGPA'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGPA."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGPA."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'gradesPreReq':
 			$preferedGradePreReqs=$_POST['preferedGradePreReqs'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGradePreReqs."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedGradePreReqs."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'creditsCompleted':
 			$preferedCredits=$_POST['preferedCredits'];
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedCredits."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$preferedCredits."','".$CO_ID."','".$managedBy."')";
 			break;
 		case 'requestedDate':
-			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`C_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$C_ID."','".$managedBy."')";
+			$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`CO_ID`,`Prof_ID`) VALUES ('".$bc."', '".($rank+1)."','".$CO_ID."','".$managedBy."')";
 			break;
 		default: //custom question.
 			$custiomQuestionsRank[$bc]=($rank+1);
@@ -283,7 +275,7 @@ if(sizeof($customQuestions)>0){
 					}
 				break;
 		}
-		$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`C_ID`,`Prof_ID`) VALUES ('".$typeCustomQuestions[$i]."', '".$questionRank."','".$jsonValues."','".$C_ID."','".$managedBy."')";						
+		$sql = "INSERT INTO `Prof_Course_Requirements` (`Type`,`Rank`,`Values`,`CO_ID`,`Prof_ID`) VALUES ('".$typeCustomQuestions[$i]."', '".$questionRank."','".$jsonValues."','".$CO_ID."','".$managedBy."')";						
 		// Execute our query
 		if (!$mysql -> Query($sql)) {
 			echo "Failed adding Custom Question Used in Course: ".$mysql->Error()." QUERY: ".$sql;

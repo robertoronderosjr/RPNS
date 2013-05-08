@@ -35,16 +35,16 @@ if($num_rows >0){
 		$query= "SELECT cs.CS_ID,cs.Section_Number 
 				 FROM Course_Section as cs
 				 WHERE cs.CO_ID='".$row['CO_ID']."' AND cs.CS_ID NOT IN 
-				 (SELECT C_ID
+				 (SELECT CS_ID
 				  FROM `Student_P#_Request` as s
-				  WHERE s.U_ID='".$netid."' AND s.Active='y')
+				  WHERE s.NetID='".$netid."' AND s.Active='y')
 			 	  AND cs.CS_ID IN
 							 (SELECT CS_ID
 							  FROM Permissions
 							  WHERE CS_ID=cs.CS_ID AND Available='y'
 					 		  )";
 		if (!$mysql -> Query($query)) {
-			echo "Failed retrieving sections: ".$mysql->Error();
+			echo "Failed retrieving available courses: ".$mysql->Error();
 			$mysql -> Kill();
 			exit(1);
 		}
@@ -68,7 +68,7 @@ if($num_rows >0){
 							}							
 							echo "</select>";
 							echo "<br/>";
-							$query= "SELECT `Type`,`Values` FROM `Prof_Course_Requirements` WHERE C_ID='".$row['C_ID']."'";
+							$query= "SELECT `Type`,`Values` FROM `Prof_Course_Requirements` WHERE CO_ID='".$row['CO_ID']."'";
 							if (!$mysql -> Query($query)) {
 									echo "Failed retrieving sections: ".$mysql->Error();
 									$mysql -> Kill();
@@ -94,7 +94,7 @@ if($num_rows >0){
 						   					 <input type='text' id='creditsCompleted' name='creditsCompleted' placeholder='Number of Credits'/><br/>";
 						   				break;
 						   			case 'gradesPreReq':
-						   				echo "<label class='control-label' for='gradesPreReq'><b>Please select your grande in each of the following</b></label>";
+						   				
 						   				$query= "SELECT cr.Requirement_ID,c.Name FROM Course as c, Course_Requirements as cr WHERE c.C_ID=cr.Requirement_ID AND cr.Requirer_ID='".$row['C_ID']."'";
 										if (!$mysql -> Query($query)) {
 												echo "Failed retrieving sections: ".$mysql->Error();
@@ -102,16 +102,21 @@ if($num_rows >0){
 												exit(1);
 										}
 										$result4 = $mysql ->Records();
-										while ($row4 = mysql_fetch_array($result4)) {
-												echo "<span>".$row4['Name']."</span><br/>";	
-												echo "
-														<div class='controls'>
-															<input type='radio' name='".$row4['Requirement_ID']."' value='D'>D<br>
-															<input type='radio' name='".$row4['Requirement_ID']."' value='C'>C<br>
-															<input type='radio' name='".$row4['Requirement_ID']."' value='B'>B<br>
-															<input type='radio' name='".$row4['Requirement_ID']."' value='A'>A<br>
-															</div><br/>
-													";
+										$num_rows = mysql_num_rows($result4);
+										if($num_rows>0){
+											echo "<label class='control-label' for='gradesPreReq'><b>Please select your grande in each of the following</b></label>";
+										
+											while ($row4 = mysql_fetch_array($result4)) {
+													echo "<span>".$row4['Name']."</span><br/>";	
+													echo "
+															<div class='controls'>
+																<input type='radio' name='".$row4['Requirement_ID']."' value='D'>D<br>
+																<input type='radio' name='".$row4['Requirement_ID']."' value='C'>C<br>
+																<input type='radio' name='".$row4['Requirement_ID']."' value='B'>B<br>
+																<input type='radio' name='".$row4['Requirement_ID']."' value='A'>A<br>
+																</div><br/>
+														";
+											}
 										}		
 						   				break;
 						   			case 'gpa':
@@ -162,6 +167,7 @@ if($num_rows >0){
 							
 							echo "<input type='hidden' name='C_ID' value='".$row['C_ID']."' />
 							<input id='csid' type='hidden' name='CS_ID' value='' />
+							<input type='hidden' name='CO_ID' value='".$row['CO_ID']."' />
 							</form>";
 							echo "<br/><button class='btn btn-success pull-right requestSPN' formid='".$row['C_ID']."'>Request SPN</button><br/><br/>";
 				echo '</div>';//close accordion-inner

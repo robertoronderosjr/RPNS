@@ -121,7 +121,7 @@
 	            </div>
 	            <div id="seeClasses" class="inactiveWindow"> 	  
 	              <h2>Classes you created</h2>
-	               <?php include "AJAX-PHP/seeClassesProfessor.php";?>         
+	               <?php include "AJAX-PHP/seeClassesProfessorFirst.html";?>         
 	            </div>
 	        <?php }
 	  				else{ //Student's view?>
