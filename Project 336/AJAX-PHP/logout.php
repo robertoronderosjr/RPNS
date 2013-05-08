@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Roberto Ronderos Botero
+ * @author Roberto Ronderos Botero, Catalina Laverde
  */
 include($_SERVER['DOCUMENT_ROOT'].'/AJAX-PHP/class.login.php');
 $log = new logmein();

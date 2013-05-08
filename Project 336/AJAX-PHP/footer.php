@@ -1,5 +1,5 @@
 <!--	
- Authors: Roberto Ronderos Botero 
+ Authors: Roberto Ronderos Botero , Catalina Laverde
 -->
 	 <hr>
 

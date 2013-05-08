@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @author Roberto Ronderos Botero
+ * @author Roberto Ronderos Botero, Catalina Laverde
  */
 
 require ("dbConnection.php");
